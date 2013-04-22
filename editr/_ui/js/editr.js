@@ -14,6 +14,9 @@ $.fn.editr = function (opts) {
             return $('<'+type+'>', attrs  ).on(fn);
         },
 
+        /**
+         * Build navigation
+         */
         buildList: function(names, type, klass) {
             var result = __.obj('ul', { class: (names.length > 1 ? ' has-many' : '') });
 
@@ -24,7 +27,7 @@ $.fn.editr = function (opts) {
                 }).attr({
                     'data-type': klass,
                     'data-id': 1
-                }).append( __.obj('span') )
+                })
             ).append( __.obj('ul', { class:'editr__subnav' }) ));
 
             if ( klass === 'css') {
@@ -44,6 +47,22 @@ $.fn.editr = function (opts) {
             });
 
             return result;
+        },
+
+        /**
+         * Get extension of file name
+         * @return {string} File extension
+         */
+        getExt: function(str) {
+            return str.match(/\.[0-9a-z]+$/i)[0].substr(1);
+        },
+
+        /**
+         * Check if file should be hidden in editor, has preceding '!'
+         * @return {bool} Is file hidden
+         */
+        isHidden: function(str) {
+            return str.indexOf('!') === 0;
         }
     },
 
@@ -63,15 +82,12 @@ $.fn.editr = function (opts) {
             item = editor.data('item'),
 
             files = {
-                all: editor.data('files').replace(/\s/g, '').split(','),
+                all: editor.data('files').replace(/\s/g, '').split(';'),
                 hidden: [],
                 html: [],
                 css: [],
                 js: []
             };
-        opts = $.extend({
-            path: 'editr/source'
-        }, opts);
 
         // Remove trailing slash in path
         if (/\/$/.test(opts.path)) {
@@ -80,10 +96,10 @@ $.fn.editr = function (opts) {
 
         // Split file names into categories by ext type
         $.each(files.all, function() {
-            if ( this.indexOf('!') === 0 ) {
+            if ( __.isHidden(this) ) {
                 files.hidden.push('' + this);
             } else {
-                files[this.match(/\.[0-9a-z]+$/i)[0].substr(1)].push('' + this);
+                files[__.getExt(this)].push('' + this);
             }
         });
 
@@ -130,7 +146,7 @@ $.fn.editr = function (opts) {
 
                             var textarea = __.obj('textarea', {
                                     spellcheck: false,
-                                    class: 'editr__editor editr__editor--' + strongFiletype + '-' + (++i)
+                                    class: 'editr__editor editr__editor--' + strongFiletype + ' editr__editor--' + strongFiletype + '-' + (++i)
                                 }).val( Beautifier[strongFiletype](response) )
 
 
@@ -142,7 +158,7 @@ $.fn.editr = function (opts) {
                     if ( files[filetype].length === 0 ) {
                         editor.find('.editr__content').append(
                             __.obj('textarea', {
-                                class: 'editr__editor editr__editor--' + filetype + '-1'
+                                class: 'editr__editor editr__editor--' + filetype + ' editr__editor--' + filetype + '-1'
                             })
                         );
                     }
@@ -156,6 +172,10 @@ $.fn.editr = function (opts) {
             editor.find('.editr__editor').each(function() {
                 new Behave({ textarea: this, softTabs: true });
             });
+
+            var result,
+                body,
+                head;
 
             editor.find('.editr__bar').find('a').on('click', function(event) {
                 event.preventDefault();
@@ -175,12 +195,7 @@ $.fn.editr = function (opts) {
                 // Show result
                 if ($this.data('type') === 'result') {
 
-                    var result = editor.find('.editr__result');
-
                     result.fadeIn().siblings().hide();
-
-                    var body = editor.find('.editr__result').contents().find('body'),
-                        head = editor.find('.editr__result').contents().find('head');
 
                     // Add html
                     body.html(editor.find('.editr__editor--html-' + $this.data('id')).val());
@@ -189,12 +204,12 @@ $.fn.editr = function (opts) {
                     head.find('.editr-stylesheet').remove();
 
                     // Add css
-                    $(editor.find('[class*="editr__editor--css"]').get().reverse()).each(function() {
+                    $(editor.find('.editr__editor--css').get().reverse()).each(function() {
                         head.append(__.obj('style', { class: 'editr-stylesheet', text: $(this).val()} ));
                     });
 
                     // Add JS
-                    $(editor.find('[class*="editr__editor--js"]').get().reverse()).each(function() {
+                    $(editor.find('.editr__editor--js').get().reverse()).each(function() {
                         result[0].contentWindow.eval($(this).val());
                     });
 
@@ -205,8 +220,21 @@ $.fn.editr = function (opts) {
             });
 
             editor.find('.editr__result').load(function() {
-                $(this).contents().find('script, link, style').remove();
+                result = editor.find('.editr__result');
+                body = result.contents().find('body');
+                head = result.contents().find('head');
+
+                $(this).contents().find('link, style').remove();
                 $(this).contents().find('body').empty();
+
+                $(files.hidden).each(function() {
+                    if ( __.getExt(this) === 'css' ) {
+                        __.obj('link', { rel: 'stylesheet', href: this.slice(1) }).appendTo(head);
+                    } else if ( __.getExt(this) === 'js' ) {
+                        __.obj('script', { src: this.slice(1) }).appendTo(head);
+                    }
+                });
+
                 editor.find('.editr__bar').find('a').first().trigger('click');
             });
         };

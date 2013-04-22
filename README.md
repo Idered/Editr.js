@@ -6,34 +6,60 @@ Editr is open source HTML, CSS and JavaScript playgrond that you can host on you
 
 *It's still in beta and might be buggy.*
 
+## Installation
+
+Copy `editr` folder to root of your website.
+
+Add this in `<head>`:
+
+```html
+<link rel="stylesheet" href="/editr/_ui/editr.css">
+```
+
+and this before `</body>`:
+
+```html
+<script src="/editr/_ui/js/editr-plugins.js"></script>
+<script src="/editr/_ui/js/editr.js"></script>
+```
+
+Now add sample editor:
+
+```html
+<div class="editr" data-item="flat-ui" data-files="switch.html;radio.html;!normalize.css;radio.css;switch.css"></div>
+```
+
+and start Editr with jQuery:
+
+```js
+$('.editr').editr({
+    path: '/editr/items'
+});
+```
+
+There're 2 options:
+
+* `path` This is used as default path for projects so you don't have to add it as html attribute. HTML attribute `data-path` will overwrite this default.
+* `callback` A function that is called after files are loaded.
+
 ## Usage
 
 To load Editr on your site, create a div with this attributes:
 
 * `class="editr"` Used as hook for loading Editr
-* `data-path` Path to folder with projects
+* `data-path`(optional) Path to folder with projects
 * `data-item` Name of project inside projects folder
-* `data-files` Coma-separated list of files which you want to show inside editor. If preceede file name with `!` then this file will be loaded inside editor but it won't be visible and editable. You an also put here paths to files e.g. `js/script.js`.
+* `data-files` List of file names separated by `;` which you want to show inside editor. If file name is preceeded with `!` then this file will be loaded inside editor but it won't be visible and editable. You an also put here paths to files e.g. `js/script.js`.
 
 ```html
-<div class="editr" data-item="twitter-profile-card" data-path="editr/items" data-files="dark.html, light.html, reset.css, style.css, js/script.js, !js/jquery.js"></div>
+<div class="editr" data-item="flat-ui" data-path="/editr/items" data-files="switch.html;radio.html;!normalize.css;radio.css;switch.css"></div>
 ```
 
-And fire it with jQuery:
+This will load `editr/items/flat-ui/dark.html`.
 
-    $('.editr').editr({
-        path: 'editr/items',
-        callback: function() {}
-    });
+First html file(`switch.html`) is used as main preview.
 
-This will load `editr/items/twitter-profile-card/dark.html`.
-
-First html file is used as main preview.
-
-There're 2 options:
-
-* `path` this is used as default path for projects so you don't have to add it as html attribute. HTML attribute `data-path` will overwrite this default.
-* `callback` A function that is called after files are loaded.
+`normalize.css` will be added to preview but it won't be visible or editable.
 
 ## Demo
 

@@ -52,7 +52,7 @@
 	vertical-align: top;
 	display: inline-block;
 	text-decoration: none;
-	border-right: 1px solid #e0ebfc;
+	border-right: 1px solid #e4e6ea;
 }
 
 .editr__bar a:hover {
@@ -68,13 +68,14 @@
 }
 
 .editr__bar .editr__subnav {
-	left: 0;
+	left: -1px;
 	top: 100%;
+	margin-top: -1px;
 	z-index: 2;
 	display: none;
 	padding-top: 1px;
 	position: absolute;
-	border: 1px solid #bbc0ca;
+	border: 1px solid #e4e6ea;
 	border-top: 0;
 }
 
@@ -83,7 +84,7 @@
 }
 
 .editr__subnav li ~ li {
-	border-top: 1px solid #bbc0ca;
+	border-top: 1px solid #e4e6ea;
 }
 
 .editr__subnav .active {
@@ -91,8 +92,9 @@
 }
 
 .editr__subnav a {
-	padding: .5em 2em .5em .5em;
 	display: block;
+	border-right: 0;
+	padding: .5em 2em .5em .5em;
 }
 
 .editr__content {
@@ -128,6 +130,7 @@
 	line-height: 1.5em;
 	resize: none;
 	display: none;
+	box-shadow: 0 1px 3px 1px rgba(187, 192, 202, .3) inset;
 	font-family: "Monaco", "Inconsolata", "Andale Mono", "Lucida Console", "Bitstream Vera Sans Mono", "Courier New", Courier, monospace;
 }
 
