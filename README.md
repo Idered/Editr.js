@@ -15,7 +15,9 @@ To load Editr on your site, create a div with this attributes:
 * `data-item` Name of project inside projects folder
 * `data-files` Coma-separated list of files which you want to show inside editor. If preceede file name with `!` then this file will be loaded inside editor but it won't be visible and editable. You an also put here paths to files e.g. `js/script.js`.
 
-    <div class="editr" data-item="twitter-profile-card" data-path="editr/items" data-files="dark.html, light.html, reset.css, style.css, js/script.js, !js/jquery.js"></div>
+```html
+<div class="editr" data-item="twitter-profile-card" data-path="editr/items" data-files="dark.html, light.html, reset.css, style.css, js/script.js, !js/jquery.js"></div>
+```
 
 And fire it with jQuery:
 
