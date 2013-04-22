@@ -1,0 +1,46 @@
+@import url("http://fonts.googleapis.com/css?family=Open+Sans:400,600");
+
+html {
+    background: #1b2026;
+    font: 1em/1.5 "Open Sans", sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -webkit-text-size-adjust: 100%;
+    -ms-text-size-adjust: 100%;
+}
+
+body {
+	max-width: 10em;
+    margin: 10em auto;
+}
+
+/** %[Object] Switch */
+/*------------------------------------*/
+.switch {
+	color: #6f839a;
+	cursor: pointer;
+	font-weight: 600;
+	line-height: 1.5em;
+	border-radius: 3px;
+	padding: .125em .5em;
+	display: inline-block;
+	background-color: #3e4956;
+	-webkit-transition: .15s ease;
+	-moz-transition: .15s ease;
+	-ms-transition: .15s ease;
+	-o-transition: .15s ease;
+	transition: .15s ease;
+}
+
+input[type="radio"]:checked + .switch {
+	color: #fff;
+	padding-left: 1em;
+	padding-right: 1em;
+}
+
+input[type="radio"]:checked + .switch--on {
+	background-color: #7eab55;
+}
+
+input[type="radio"]:checked + .switch--off {
+	background-color: #dd4a38;
+}

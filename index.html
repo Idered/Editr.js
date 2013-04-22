@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<title>Editr</title>
+
+	<link rel="stylesheet" href="_ui/normalize.css">
+	<link rel="stylesheet" href="_ui/style.css">
+
+	<!-- Editr style -->
+	<link rel="stylesheet" href="editr/_ui/editr.css">
+</head>
+<body>
+
+<!-- Editr item -->
+<div class="editr" data-item="flat-switch" data-files="index.html, normalize.css, style.css"></div>
+
+<!-- Editr item -->
+<div class="editr" data-item="twitter-profile-card" data-files="dark.html, light.html, reset.css, style.css, js/script.js, !js/jquery.js"></div>
+
+
+<script src="_ui/js/jquery.js"></script>
+
+<!-- Editr js -->
+<script src="editr/_ui/js/editr-plugins.js"></script>
+<script src="editr/_ui/js/editr.js"></script>
+
+<script>
+	(function($) {
+		$('.editr').editr();
+	})(jQuery);
+</script>
+</body>
+</html>

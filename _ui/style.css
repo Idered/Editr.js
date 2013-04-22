@@ -1,0 +1,17 @@
+/** $Base */
+/*---------------------------------------------------------------------------*/
+
+html {
+	font: 400 1em/1.5 "Open Sans", sans-serif;
+	background-color: #fff;
+	color: #666;
+	-webkit-font-smoothing: antialiased;
+	-webkit-text-size-adjust: 100%;
+	-ms-text-size-adjust: 100%;
+}
+
+body {
+	margin: 0 auto;
+	padding: 1em;
+	max-width: 960px;
+}

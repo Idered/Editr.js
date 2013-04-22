@@ -1,0 +1,137 @@
+/** Editr | MIT License | git.io/editr */
+
+.editr {
+	border-radius: 3px;
+	margin-bottom: 1em;
+	box-shadow: 0 1px 3px 1px rgba(0,0,0, .1);
+}
+
+.editr__bar {
+	background: #fff;
+	border: 1px solid #bbc0ca;
+	border-bottom: 0;
+	border-radius: 3px 3px 0 0;
+}
+
+.editr__bar:after {
+	content: '';
+	clear: both;
+	display: table;
+}
+
+.editr__bar ul {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+	float: left;
+}
+
+.editr__bar li {
+	position: relative;
+}
+
+.editr__bar .has-many > li > a:after {
+	content: '';
+	width: 0;
+	height: 0;
+	cursor: pointer;
+	margin: .3125em 0;
+	display: inline-block;
+	vertical-align: middle;
+	margin-left: .375em;
+	border: .375em solid;
+	border-bottom-width: 0;
+	border-color: #bbb transparent transparent transparent;
+}
+
+.editr__bar a {
+	color: #666;
+	padding: .75em 1em;
+	background: #fff;
+	font-size: .875em;
+	vertical-align: top;
+	display: inline-block;
+	text-decoration: none;
+	border-right: 1px solid #e0ebfc;
+}
+
+.editr__bar a:hover {
+	color: #e45f54;
+}
+
+.editr__bar .has-many > li > a:hover:after {
+	border-top-color: #e45f54;
+}
+
+.editr__bar .active {
+	background: #f0f1f4;
+}
+
+.editr__bar .editr__subnav {
+	left: 0;
+	top: 100%;
+	z-index: 2;
+	display: none;
+	padding-top: 1px;
+	position: absolute;
+	border: 1px solid #bbc0ca;
+	border-top: 0;
+}
+
+.editr__bar .has-many li:hover > ul {
+	display: block;
+}
+
+.editr__subnav li ~ li {
+	border-top: 1px solid #bbc0ca;
+}
+
+.editr__subnav .active {
+	background: #f0f1f4;
+}
+
+.editr__subnav a {
+	padding: .5em 2em .5em .5em;
+	display: block;
+}
+
+.editr__content {
+	height: 0;
+	width: 100%;
+	position: relative;
+	padding-bottom: 56.25%;
+	border-radius: 0 0 3px 3px;
+	box-shadow: 0 0 0 1px #bbc0ca inset;
+}
+
+.editr__content > * {
+	background: #f7f8fa;
+	border: 0;
+	padding: 0;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	border: none;
+	position: absolute;
+	border: 1px solid #bbc0ca;
+	border-radius: 0 0 3px 3px;
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+}
+
+.editr__editor {
+	padding: 1em;
+	color: #68707c;
+	font-size: .875em;
+	line-height: 1.5em;
+	resize: none;
+	display: none;
+	font-family: "Monaco", "Inconsolata", "Andale Mono", "Lucida Console", "Bitstream Vera Sans Mono", "Courier New", Courier, monospace;
+}
+
+.editr__editor:focus {
+	border-color: #a1a5ae;
+	outline: none;
+}
