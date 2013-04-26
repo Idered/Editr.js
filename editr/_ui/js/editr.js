@@ -203,7 +203,7 @@ $.fn.editr = function (opts) {
                 // Show result
                 if ($this.data('type') === 'result') {
 
-                    result.fadeIn().siblings().hide();
+                    editor.find('.editr__result').fadeIn().siblings().hide();
 
                     // Add html
                     body.html(ace.edit(editor.find('.editr__editor--html-' + $this.data('id')).attr('id')).getValue());
