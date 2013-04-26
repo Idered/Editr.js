@@ -55,7 +55,7 @@ To load Editr on your site, create a div with this attributes:
 
 * `class="editr"` Used as hook for loading Editr
 * `data-path`(optional) Path to folder with projects
-* `data-hide`(optional) This attribute allows you to hide elements from edior toolbar. Values: `all, html, css, js`.
+* `data-hide`(optional) This attribute allows you to hide elements from editr toolbar. Values: `all, html, css, js`.
 * `data-item` Name of project inside projects folder
 * `data-files` List of file names separated by `;` which you want to show inside editor. If file name is preceeded with `!` then this file will be loaded inside editor but it won't be visible and editable. You an also put here paths to files e.g. `js/script.js`.
 
