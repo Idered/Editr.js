@@ -1,4 +1,4 @@
-/** Editr 1.0.0 | MIT License | git.io/editr */
+/** Editr 1.0.1 | MIT License | git.io/editr */
 
 (function($) {
 
@@ -18,7 +18,9 @@ $.fn.editr = function (opts) {
          * Build navigation
          */
         buildList: function(names, type, klass) {
-            var result = __.obj('ul', { class: (names.length > 1 ? ' has-many' : '') });
+            var result = __.obj('ul', {
+                class: 'editr__link--' + klass + (names.length > 1 ? ' has-many' : '')
+            });
 
             result.append( __.obj('li').append(
                 __.obj('a', {
@@ -49,6 +51,26 @@ $.fn.editr = function (opts) {
             return result;
         },
 
+        randomID: function(a,b) {
+            b=b||16;
+            return Array(a||32).join(0).replace(/0/g,function(){return(0|Math.random()*b).toString(b)});
+        },
+
+        createEditor: function(i, filetype, target, theme) {
+            var textarea = __.obj('div', {
+                id: 'editr_' + __.randomID(),
+                class: 'editr__editor editr__editor--' + filetype + ' editr__editor--' + filetype + '-' + (++i)
+            });
+
+            textarea.appendTo(target);
+
+            var aceEditor = ace.edit(textarea.attr('id'));
+            aceEditor.setTheme("ace/theme/" + theme);
+            aceEditor.getSession().setMode('ace/mode/' + (filetype === 'js' ? 'javascript' : filetype));
+
+            return aceEditor;
+        },
+
         /**
          * Get extension of file name
          * @return {string} File extension
@@ -69,14 +91,8 @@ $.fn.editr = function (opts) {
     Editr = Editr || function (opts) {
 
         var editor = opts.editor,
-
             // Reference variable to check when all files are loaded
             loadedFiles = 0,
-
-            filesToLoad = 0,
-
-            // Result iframe
-            result = editor.find('.result'),
 
             // Item/project id
             item = editor.data('item'),
@@ -121,11 +137,12 @@ $.fn.editr = function (opts) {
 
         // Add textareas
         for ( var filetype in files ) {
-            if (filetype !== 'all' && filetype !== 'hidden') {
+            if ($.inArray(filetype, ['hidden', 'all']) === -1) {
                 // Add textareas for all files
                 if (files[filetype].length) {
                     $(files[filetype]).each(function(i) {
-                        var strongFiletype = filetype;
+                        var strongFiletype = filetype,
+                            textarea = __.createEditor(i, strongFiletype, editor.find('.editr__content'), opts.theme);
 
                         $.get([opts.path, item, this].join('/'), function(response) {
                             ++loadedFiles;
@@ -136,32 +153,23 @@ $.fn.editr = function (opts) {
 
                             if ( strongFiletype === 'html' ) {
                                 response = response
-                                    .replace('<body>', '<body><div class="body">')
+                                    .replace(/body\b[^>]*>/, '<body><div class="body">')
                                     .replace('</body>', '</body>');
 
                                 response = __.obj('div').html(response);
                                 response.find('script, link, style').remove();
                                 response = response.find('.body').html();
+
+                                response = Beautifier.html(response);
                             }
 
-                            var textarea = __.obj('textarea', {
-                                    spellcheck: false,
-                                    class: 'editr__editor editr__editor--' + strongFiletype + ' editr__editor--' + strongFiletype + '-' + (++i)
-                                }).val( Beautifier[strongFiletype](response) )
-
-
-                            editor.find('.editr__content').append(textarea);
+                            textarea.setValue(response);
+                            textarea.clearSelection();
                         });
                     });
                 // If there's no html,css or js file, add empty textarea for it
-                } else {
-                    if ( files[filetype].length === 0 ) {
-                        editor.find('.editr__content').append(
-                            __.obj('textarea', {
-                                class: 'editr__editor editr__editor--' + filetype + ' editr__editor--' + filetype + '-1'
-                            })
-                        );
-                    }
+                } else if ( files[filetype].length === 0 ) {
+                    __.createEditor(i, filetype, editor.find('.editr__content'), opts.theme);
                 }
             }
         }
@@ -170,7 +178,7 @@ $.fn.editr = function (opts) {
             opts.callback();
 
             editor.find('.editr__editor').each(function() {
-                new Behave({ textarea: this, softTabs: true });
+                // new Behave({ textarea: this, softTabs: true });
             });
 
             var result,
@@ -198,24 +206,24 @@ $.fn.editr = function (opts) {
                     result.fadeIn().siblings().hide();
 
                     // Add html
-                    body.html(editor.find('.editr__editor--html-' + $this.data('id')).val());
+                    body.html(ace.edit(editor.find('.editr__editor--html-' + $this.data('id')).attr('id')).getValue());
 
                     // Remove old css
                     head.find('.editr-stylesheet').remove();
 
                     // Add css
                     $(editor.find('.editr__editor--css').get().reverse()).each(function() {
-                        head.append(__.obj('style', { class: 'editr-stylesheet', text: $(this).val()} ));
+                        head.append(__.obj('style', { class: 'editr-stylesheet', text: ace.edit(this.id).getValue() } ));
                     });
 
                     // Add JS
                     $(editor.find('.editr__editor--js').get().reverse()).each(function() {
-                        result[0].contentWindow.eval($(this).val());
+                        result[0].contentWindow.eval(ace.edit(this.id).getValue());
                     });
 
                 // Show textarea
                 } else {
-                    editor.find('.editr__editor--' + $this.data('type') + '-' + $this.data('id')).fadeIn().focus().siblings().hide();
+                    editor.find('.editr__editor--' + $this.data('type') + '-' + $this.data('id')).fadeIn().siblings().hide();
                 }
             });
 
@@ -244,6 +252,7 @@ $.fn.editr = function (opts) {
     $(this).each(function() {
         var settings = $.extend({
             editor: $(this),
+            theme: 'monokai',
             path: 'editr/items',
             callback: function() {}
         }, opts);

@@ -6,20 +6,66 @@
 
 	<title>Editr</title>
 
-	<link rel="stylesheet" href="_ui/normalize.css">
-	<link rel="stylesheet" href="_ui/style.css">
+	<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/normalize/2.1.0/normalize.css">
+	<style>
+		html {
+			font: 400 1em/1.5 "Open Sans", sans-serif;
+			background-color: #fff;
+			color: #666;
+			-webkit-font-smoothing: antialiased;
+			-webkit-text-size-adjust: 100%;
+			-ms-text-size-adjust: 100%;
+		}
+
+		body {
+			margin: 0 auto;
+			padding: 1em;
+			max-width: 960px;
+		}
+
+		@-webkit-keyframes pulse { 0% { border-bottom-width: 1px } 50% { border-bottom-width: 3px; } 100% { border-bottom-width: 1px } }
+		@-moz-keyframes pulse { 0% { border-bottom-width: 1px } 50% { border-bottom-width: 3px; } 100% { border-bottom-width: 1px }	}
+		@-o-keyframes pulse { 0% { border-bottom-width: 1px } 50% { border-bottom-width: 3px; } 100% { border-bottom-width: 1px } }
+		@keyframes pulse { 0% { border-bottom-width: 1px } 50% { border-bottom-width: 3px; } 100% { border-bottom-width: 1px } }
+
+		h1 a {
+			color: #333;
+			text-decoration: none;
+			position: relative;
+			display: inline-block;
+			border-bottom: 1px dotted #bbb;
+		}
+
+		h1 a:hover:after {
+			top: 100%;
+			content: '';
+			width: 100%;
+			display: block;
+			position: absolute;
+			border-bottom: 1px solid #f00;
+			-webkit-animation: pulse .25s ease;
+			   -moz-animation: pulse .25s ease;
+			    -ms-animation: pulse .25s ease;
+			     -o-animation: pulse .25s ease;
+			        animation: pulse .25s ease;
+		}
+		h1 span { color: #bbb; }
+	</style>
 
 	<!-- Editr style -->
 	<link rel="stylesheet" href="editr/_ui/editr.css">
 </head>
 <body>
 
+<h1><a href="http://git.io/editr">Editr</a> <span>- HTML, CSS, JS playground</span></h1>
+
 <!-- Editr item -->
 <div class="editr" data-item="flat-ui" data-files="switch.html;radio.html;!normalize.css;radio.css;switch.css"></div>
 
-<script src="_ui/js/jquery.js"></script>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 
 <!-- Editr js -->
+<script src="http://d1n0x3qji82z53.cloudfront.net/src-min-noconflict/ace.js"></script>
 <script src="editr/_ui/js/editr-plugins.js"></script>
 <script src="editr/_ui/js/editr.js"></script>
 
