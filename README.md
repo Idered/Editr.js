@@ -4,7 +4,12 @@
 
 Editr is open source HTML, CSS and JavaScript playgrond that you can host on your server.
 
-*It's still in beta and might be buggy.*
+**It's still in beta and might be buggy.**
+
+* based on ACE Editor
+* easy setup
+* supports multiple editors on one page
+* configuration via JS object or HTML attributes
 
 ## Installation
 
@@ -19,6 +24,7 @@ Add this in `<head>`:
 and this before `</body>`:
 
 ```html
+<script src="http://d1n0x3qji82z53.cloudfront.net/src-min-noconflict/ace.js"></script>
 <script src="/editr/_ui/js/editr-plugins.js"></script>
 <script src="/editr/_ui/js/editr.js"></script>
 ```
@@ -37,9 +43,10 @@ $('.editr').editr({
 });
 ```
 
-There're 2 options:
+## Options
 
 * `path` This is used as default path for projects so you don't have to add it as html attribute. HTML attribute `data-path` will overwrite this default.
+* `theme` ACE Editor theme
 * `callback` A function that is called after files are loaded.
 
 ## Usage
@@ -48,6 +55,7 @@ To load Editr on your site, create a div with this attributes:
 
 * `class="editr"` Used as hook for loading Editr
 * `data-path`(optional) Path to folder with projects
+* `data-hide`(optional) This attribute allows you to hide elements from edior toolbar. Values: `all, html, css, js`.
 * `data-item` Name of project inside projects folder
 * `data-files` List of file names separated by `;` which you want to show inside editor. If file name is preceeded with `!` then this file will be loaded inside editor but it won't be visible and editable. You an also put here paths to files e.g. `js/script.js`.
 
@@ -55,11 +63,11 @@ To load Editr on your site, create a div with this attributes:
 <div class="editr" data-item="flat-ui" data-path="/editr/items" data-files="switch.html;radio.html;!normalize.css;radio.css;switch.css"></div>
 ```
 
-This will load `editr/items/flat-ui/dark.html`.
+This will load `editr/items/flat-ui/switch.html`.
 
-First html file(`switch.html`) is used as main preview.
+First html file(`switch.html` in this case) is used as main preview.
 
-`normalize.css` will be added to preview but it won't be visible or editable.
+In this example, `normalize.css` will be added to preview but it won't be visible or editable.
 
 ## Demo
 
