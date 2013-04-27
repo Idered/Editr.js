@@ -6,12 +6,14 @@ Editr is HTML, CSS and JavaScript playgrond that you can host on your server.
 
 **It's still in beta and might be buggy.**
 
-* based on ACE Editor
 * easy setup
+* based on ACE Editor
 * supports multiple instances on one page
 * configuration via JS object or HTML attributes
 
 ## Installation
+
+*Note: Editr uses jQuery.*
 
 Copy `editr` folder to root of your website.
 
@@ -25,7 +27,6 @@ and this before `</body>`:
 
 ```html
 <script src="http://d1n0x3qji82z53.cloudfront.net/src-min-noconflict/ace.js"></script>
-<script src="/editr/editr-plugins.js"></script>
 <script src="/editr/editr.js"></script>
 ```
 
