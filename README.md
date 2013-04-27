@@ -4,8 +4,6 @@
 
 Editr is HTML, CSS and JavaScript playgrond that you can host on your server.
 
-**It's still in beta and might be buggy.**
-
 * easy setup
 * based on ACE Editor
 * supports multiple instances on one page
