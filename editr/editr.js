@@ -3,7 +3,7 @@
 (function($) {
 $.fn.editr = function (opts) {
 
-    var i = 0,
+    var editrID = 0,
     __ = {
 
         /**
@@ -144,9 +144,9 @@ $.fn.editr = function (opts) {
         // Add result iframe
         .append( __.obj('iframe', {
             class: 'editr__result',
-            src: [opts.path, item, files.html[0]].join('/'),
-            name: 'editr_' + i }
-        )));
+            name: 'editr_' + (++editrID),
+            src: [opts.path, item, files.html[0]].join('/')
+        })));
 
         // Loop throught files
         for ( var filetype in files ) {
@@ -182,7 +182,13 @@ $.fn.editr = function (opts) {
                                 response.find('script, link, style').remove();
                                 response = response.find('.body').html();
 
-                                response = Beautifier.html(response);
+                                response = response
+                                    // remove empty lines
+                                    .replace(/[\r\n]+/gi, '\n')
+                                    // remove empty line at the beginning
+                                    .replace(/^[\r\n]/gi, '')
+                                    // remove empty line at the end
+                                    .replace(/[\n\r]$/gi, '');
                             }
 
                             textarea.setValue(response);
@@ -195,7 +201,7 @@ $.fn.editr = function (opts) {
                 // If there's no html, css or js file, add empty textarea for it
                 } else if ( !files[filetype].length ) {
 
-                    __.createEditor(i, filetype, editor.find('.editr__content'), opts.theme);
+                    __.createEditor(0, filetype, editor.find('.editr__content'), opts.theme);
 
                 }
             }

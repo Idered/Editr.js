@@ -18,15 +18,15 @@ Copy `editr` folder to root of your website.
 Add this in `<head>`:
 
 ```html
-<link rel="stylesheet" href="/editr/_ui/editr.css">
+<link rel="stylesheet" href="/editr/editr.css">
 ```
 
 and this before `</body>`:
 
 ```html
 <script src="http://d1n0x3qji82z53.cloudfront.net/src-min-noconflict/ace.js"></script>
-<script src="/editr/_ui/js/editr-plugins.js"></script>
-<script src="/editr/_ui/js/editr.js"></script>
+<script src="/editr/editr-plugins.js"></script>
+<script src="/editr/editr.js"></script>
 ```
 
 ## HTML Attribute options
