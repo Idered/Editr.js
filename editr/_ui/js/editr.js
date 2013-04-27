@@ -1,7 +1,6 @@
-/** Editr 1.0.1 | MIT License | git.io/editr */
+/** Editr 1.0.2 | MIT License | git.io/editr */
 
 (function($) {
-
 $.fn.editr = function (opts) {
 
     var i = 0,
@@ -51,24 +50,38 @@ $.fn.editr = function (opts) {
             return result;
         },
 
+        /**
+         * @return {string} Random ID
+         */
         randomID: function(a,b) {
             b=b||16;
             return Array(a||32).join(0).replace(/0/g,function(){return(0|Math.random()*b).toString(b)});
         },
 
+        /**
+         * Create ACE Editor and append it to target
+         * @return {object} ACE Editor
+         */
         createEditor: function(i, filetype, target, theme) {
-            var textarea = __.obj('div', {
-                id: 'editr_' + __.randomID(),
-                class: 'editr__editor editr__editor--' + filetype + ' editr__editor--' + filetype + '-' + (++i)
-            });
+            var aceEditor,
+                textarea = __.obj('div', {
+                    id: 'editr_' + __.randomID(),
+                    class: 'editr__editor editr__editor--' + filetype + ' editr__editor--' + filetype + '-' + (++i)
+                }).appendTo(target);
 
-            textarea.appendTo(target);
-
-            var aceEditor = ace.edit(textarea.attr('id'));
+            aceEditor = ace.edit(textarea.attr('id'));
             aceEditor.setTheme("ace/theme/" + theme);
             aceEditor.getSession().setMode('ace/mode/' + (filetype === 'js' ? 'javascript' : filetype));
 
             return aceEditor;
+        },
+
+        /**
+         * Get editor by type and(optionaly) id
+         * @return {jQuery} Editor jQuery object
+         */
+        getEditor: function(editor, type, id) {
+            return editor.find(id ? '.editr__editor--' + type + '-' + id : '.editr__editor--' + type);
         },
 
         /**
@@ -106,45 +119,54 @@ $.fn.editr = function (opts) {
             };
 
         // Remove trailing slash in path
-        if (/\/$/.test(opts.path)) {
-            opts.path = opts.path.slice(0, - 1);
-        }
+        opts.path = opts.path.replace(/\/$/, '')
 
         // Split file names into categories by ext type
         $.each(files.all, function() {
-            if ( __.isHidden(this) ) {
-                files.hidden.push('' + this);
-            } else {
-                files[__.getExt(this)].push('' + this);
-            }
+            files[ __.isHidden(this) ? 'hidden' : __.getExt(this)].push('' + this);
         });
+
 
         // Build editor
         editor
+
         // Add editor bar
-        .append( __.obj('header', { class: 'editr__bar' }).append([
+        .append( __.obj('header', { class: 'editr__bar' } ).append([
             __.buildList(files.html, 'Result', 'result'),
             __.buildList(files.html, 'HTML', 'html'),
             __.buildList(files.css, 'CSS', 'css'),
             __.buildList(files.js, 'JavaScript', 'js')
-        ]) )
+        ]))
+
         // Add content wrapper
         .append( __.obj('div', { class: 'editr__content'} )
-        // Add result iframe
-        .append(
-            __.obj('iframe', { class: 'editr__result', src: [opts.path, item, files.html[0]].join('/'), name: 'editr_' + i } )
-        ));
 
-        // Add textareas
+        // Add result iframe
+        .append( __.obj('iframe', {
+            class: 'editr__result',
+            src: [opts.path, item, files.html[0]].join('/'),
+            name: 'editr_' + i }
+        )));
+
+        // Loop throught files
         for ( var filetype in files ) {
+
+            // Omit hiden and all arrays
             if ($.inArray(filetype, ['hidden', 'all']) === -1) {
-                // Add textareas for all files
+
                 if (files[filetype].length) {
+
+                    // Add textareas for all files
                     $(files[filetype]).each(function(i) {
+
                         var strongFiletype = filetype,
                             textarea = __.createEditor(i, strongFiletype, editor.find('.editr__content'), opts.theme);
 
+                        // Load file content
                         $.get([opts.path, item, this].join('/'), function(response) {
+
+
+                            // Track num of loaded files
                             ++loadedFiles;
 
                             if ( loadedFiles === files.all.length - files.hidden.length ) {
@@ -165,11 +187,16 @@ $.fn.editr = function (opts) {
 
                             textarea.setValue(response);
                             textarea.clearSelection();
+
                         });
+
                     });
-                // If there's no html,css or js file, add empty textarea for it
-                } else if ( files[filetype].length === 0 ) {
+
+                // If there's no html, css or js file, add empty textarea for it
+                } else if ( !files[filetype].length ) {
+
                     __.createEditor(i, filetype, editor.find('.editr__content'), opts.theme);
+
                 }
             }
         }
@@ -177,79 +204,110 @@ $.fn.editr = function (opts) {
         var loadCallback = function() {
             opts.callback();
 
-            editor.find('.editr__editor').each(function() {
-                // new Behave({ textarea: this, softTabs: true });
-            });
-
-            var result,
-                body,
-                head;
+            var result, body, head, aceEditor;
 
             editor.find('.editr__bar').find('a').on('click', function(event) {
-                event.preventDefault();
 
                 var $this = $(this);
 
+                event.preventDefault();
+
+                // Remove active class from nav items
                 $this.closest('.editr__bar').find('.active').removeClass('active');
 
+                // Clicked on sub nav item
                 if ( $this.closest('.editr__subnav').length ) {
+
+                    // Add class for main nav item
                     $this.closest('.editr__subnav').prev().addClass('active');
+
+                // Clicked on main nav item with sub items
                 } else {
+
+                    // Add class for first sub nav item
                     $this.next().find('a').first().addClass('active');
+
                 }
 
                 $this.addClass('active');
 
                 // Show result
-                if ($this.data('type') === 'result') {
-
-                    editor.find('.editr__result').fadeIn().siblings().hide();
+                if ($this.attr('data-type') === 'result') {
 
                     // Add html
-                    body.html(ace.edit(editor.find('.editr__editor--html-' + $this.data('id')).attr('id')).getValue());
+                    body.html(
+                        ace.edit( __.getEditor(editor, 'html', $this.attr('data-id')).attr('id') ).getValue()
+                    );
 
                     // Remove old css
                     head.find('.editr-stylesheet').remove();
 
                     // Add css
-                    $(editor.find('.editr__editor--css').get().reverse()).each(function() {
-                        head.append(__.obj('style', { class: 'editr-stylesheet', text: ace.edit(this.id).getValue() } ));
+                    $( __.getEditor(editor, 'css').get().reverse() ).each(function() {
+
+                        head.append(__.obj('style', {
+                            class: 'editr-stylesheet',
+                            text: ace.edit(this.id).getValue()
+                        }));
+
                     });
 
                     // Add JS
-                    $(editor.find('.editr__editor--js').get().reverse()).each(function() {
-                        result[0].contentWindow.eval(ace.edit(this.id).getValue());
+                    $( __.getEditor(editor, 'js').get().reverse() ).each(function() {
+
+                        result[0].contentWindow.eval( ace.edit(this.id).getValue() );
+
                     });
+
+                    // Show result iframe
+                    result.fadeIn().siblings().hide();
 
                 // Show textarea
                 } else {
-                    editor.find('.editr__editor--' + $this.data('type') + '-' + $this.data('id')).fadeIn().siblings().hide();
+
+                    aceEditor = __.getEditor(editor, $this.attr('data-type'), $this.attr('data-id'));
+
+                    aceEditor.fadeIn().siblings().hide();
+                    ace.edit(aceEditor.attr('id')).resize();
+
                 }
             });
 
             editor.find('.editr__result').load(function() {
-                result = editor.find('.editr__result');
-                body = result.contents().find('body');
-                head = result.contents().find('head');
 
-                $(this).contents().find('link, style').remove();
-                $(this).contents().find('body').empty();
+                result = $(this);
+                body   = result.contents().find('body');
+                head   = result.contents().find('head');
+
+                result.contents().find('link, style').remove().end().find('body').empty();
 
                 $(files.hidden).each(function() {
+
                     if ( __.getExt(this) === 'css' ) {
-                        __.obj('link', { rel: 'stylesheet', href: this.slice(1) }).appendTo(head);
+
+                        __.obj('link', {
+                            rel: 'stylesheet',
+                            href: this.slice(1)
+                        }).appendTo(head);
+
                     } else if ( __.getExt(this) === 'js' ) {
-                        __.obj('script', { src: this.slice(1) }).appendTo(head);
+
+                        __.obj('script', {
+                            src: this.slice(1)
+                        }).appendTo(head);
+
                     }
                 });
 
                 editor.find('.editr__bar').find('a').first().trigger('click');
+
             });
         };
 
     };
 
     $(this).each(function() {
+
         var settings = $.extend({
             editor: $(this),
             theme: 'monokai',
@@ -261,9 +319,12 @@ $.fn.editr = function (opts) {
             settings.path = $(this).data('path');
         }
 
+        if ( $(this).data('theme') ) {
+            settings.theme = $(this).data('theme');
+        }
+
         new Editr(settings);
+
     });
-
 };
-
 })(jQuery);

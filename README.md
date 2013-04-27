@@ -2,13 +2,13 @@
 
 ## About
 
-Editr is open source HTML, CSS and JavaScript playgrond that you can host on your server.
+Editr is HTML, CSS and JavaScript playgrond that you can host on your server.
 
 **It's still in beta and might be buggy.**
 
 * based on ACE Editor
 * easy setup
-* supports multiple editors on one page
+* supports multiple instances on one page
 * configuration via JS object or HTML attributes
 
 ## Installation
@@ -29,7 +29,23 @@ and this before `</body>`:
 <script src="/editr/_ui/js/editr.js"></script>
 ```
 
-Now add sample editor:
+## HTML Attrbiute options
+
+* `data-item` Name of project folder inside projects folder(js `path` or html attr `data-path` value).
+* `data-path`(optional) Path to folder with projects.
+* `data-theme`(optional) ACE Editor theme
+* `data-hide`(optional) This attribute allows you to hide elements from Editr toolbar. Values: `all, result, html, css, js`.
+* `data-files` List of files names separated by `;` which you want to show inside editor. If file name(or path) is preceeded with `!` then this file will be loaded inside editor but it won't be visible and editable. You an also put here paths to files e.g. `js/script.js` or 	`//cdnjs.cloudflare.com/ajax/libs/jade/0.27.7/jade.min.js`.
+
+## JS Options
+
+* `theme` ACE Editor theme
+* `callback` A function that is called after files are loaded.
+* `path` This is used as default path for projects so you don't have to add it as html attribute. HTML attribute `data-path` will overwrite this default.
+
+## How to embed Editr
+
+To load Editr on your site, create a div with this attributes:
 
 ```html
 <div class="editr" data-item="flat-ui" data-files="switch.html;radio.html;!normalize.css;radio.css;switch.css"></div>
@@ -43,27 +59,7 @@ $('.editr').editr({
 });
 ```
 
-## Options
-
-* `path` This is used as default path for projects so you don't have to add it as html attribute. HTML attribute `data-path` will overwrite this default.
-* `theme` ACE Editor theme
-* `callback` A function that is called after files are loaded.
-
-## Usage
-
-To load Editr on your site, create a div with this attributes:
-
-* `class="editr"` Used as hook for loading Editr
-* `data-path`(optional) Path to folder with projects
-* `data-hide`(optional) This attribute allows you to hide elements from editr toolbar. Values: `all, html, css, js`.
-* `data-item` Name of project inside projects folder
-* `data-files` List of file names separated by `;` which you want to show inside editor. If file name is preceeded with `!` then this file will be loaded inside editor but it won't be visible and editable. You an also put here paths to files e.g. `js/script.js`.
-
-```html
-<div class="editr" data-item="flat-ui" data-path="/editr/items" data-files="switch.html;radio.html;!normalize.css;radio.css;switch.css"></div>
-```
-
-This will load `editr/items/flat-ui/switch.html`.
+This will load `/editr/items/flat-ui/` project.
 
 First html file(`switch.html` in this case) is used as main preview.
 
