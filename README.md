@@ -29,7 +29,7 @@ and this before `</body>`:
 <script src="/editr/_ui/js/editr.js"></script>
 ```
 
-## HTML Attrbiute options
+## HTML Attribute options
 
 * `data-item` Name of project folder inside projects folder(js `path` or html attr `data-path` value).
 * `data-path`(optional) Path to folder with projects.
