@@ -1,74 +1,91 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <head>
-    <meta charset='utf-8' />
-    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
-    <meta name="description" content="Editr : HTML, CSS and JavaScript playground" />
+	<title>Editr</title>
 
-    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+	<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/normalize/2.1.0/normalize.css">
+	<style>
+		html {
+			font: 400 1em/1.5 "Open Sans", sans-serif;
+			background-color: #fff;
+			color: #666;
+			-webkit-font-smoothing: antialiased;
+			-webkit-text-size-adjust: 100%;
+			-ms-text-size-adjust: 100%;
+		}
 
-    <title>Editr</title>
-  </head>
+		body {
+			margin: 0 auto;
+			padding: 1em;
+			max-width: 960px;
+		}
 
-  <body>
+		h1 a {
+			color: #FD9173;
+			text-decoration: none;
+			position: relative;
+			display: inline-block;
+		}
 
-    <!-- HEADER -->
-    <div id="header_wrap" class="outer">
-        <header class="inner">
-          <a id="forkme_banner" href="https://github.com/Idered/editr">View on GitHub</a>
+		h1 a:hover {
+			color: #2AC4C0;
+		}
 
-          <h1 id="project_title">Editr</h1>
-          <h2 id="project_tagline">HTML, CSS and JavaScript playground</h2>
+		h1 span { color: #bbb; }
 
-            <section id="downloads">
-              <a class="zip_download_link" href="https://github.com/Idered/editr/zipball/master">Download this project as a .zip file</a>
-              <a class="tar_download_link" href="https://github.com/Idered/editr/tarball/master">Download this project as a tar.gz file</a>
-            </section>
-        </header>
-    </div>
+		.share {
+			padding: 1em 0;
+			margin-bottom: 1.5em;
+			text-align: center;
+			border-top: 1px solid #efefef;
+			border-bottom: 1px solid #efefef;
+		}
 
-    <!-- MAIN CONTENT -->
-    <div id="main_content_wrap" class="outer">
-      <section id="main_content" class="inner">
-        <h3>Welcome to GitHub Pages.</h3>
+		.share > * {
+			display: inline-block;
+			vertical-align: middle;
+		}
 
-<p>This automatic page generator is the easiest way to create beautiful pages for all of your projects. Author your page content here using GitHub Flavored Markdown, select a template crafted by a designer, and publish. After your page is generated, you can check out the new branch:</p>
+	</style>
 
-<pre><code>$ cd your_repo_root/repo_name
-$ git fetch origin
-$ git checkout gh-pages
-</code></pre>
+	<!-- Editr style -->
+	<link rel="stylesheet" href="editr/editr.css">
+</head>
+<body>
 
-<p>If you're using the GitHub for Mac, simply sync your repository and you'll see the new branch.</p>
+<a href="http://git.io/editr"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_orange_ff7600.png" alt="Fork me on GitHub"></a>
 
-<h3>Designer Templates</h3>
+<h1><a href="http://git.io/editr">Editr</a> <span>- HTML, CSS, JS playground</span></h1>
 
-<p>We've crafted some handsome templates for you to use. Go ahead and continue to layouts to browse through them. You can easily go back to edit your page before publishing. After publishing your page, you can revisit the page generator and switch to another theme. Your Page content will be preserved if it remained markdown format.</p>
+<div class="share">
+	<!-- @see ghbtns.com -->
+	<iframe src="http://ghbtns.com/github-btn.html?user=Idered&repo=editr&type=watch&count=true" allowtransparency="true" frameborder="0" scrolling="0" width="120" height="20"></iframe>
+	<iframe src="http://ghbtns.com/github-btn.html?user=Idered&repo=editr&type=fork&count=true" allowtransparency="true" frameborder="0" scrolling="0" width="120" height="20"></iframe>
+	<!-- @see dev.twitter.com/docs/tweet-button -->
+	<a href="https://twitter.com/share" class="twitter-share-button" data-text="Editr - HTML, CSS, JavaScript playground" data-url="https://github.com/Idered/editr" data-via="Idered">Tweet</a>
+	<!-- @see dev.twitter.com/docs/follow-button -->
+	<a href="https://twitter.com/Idered" class="twitter-follow-button" data-show-count="false">Follow @Idered</a>
+</div>
+<!-- /.share -->
 
-<h3>Rather Drive Stick?</h3>
+<!-- Editr item -->
+<div class="editr" data-item="flat-ui" data-files="switch.html;radio.html;!normalize.css;radio.css;switch.css"></div>
 
-<p>If you prefer to not use the automatic generator, push a branch named <code>gh-pages</code> to your repository to create a page manually. In addition to supporting regular HTML content, GitHub Pages support Jekyll, a simple, blog aware static site generator written by our own Tom Preston-Werner. Jekyll makes it easy to create site-wide headers and footers without having to copy them across every page. It also offers intelligent blog support and other advanced templating features.</p>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 
-<h3>Authors and Contributors</h3>
+<!-- Editr js -->
+<script src="http://d1n0x3qji82z53.cloudfront.net/src-min-noconflict/ace.js"></script>
+<script src="editr/editr.js"></script>
 
-<p>You can <a href="https://github.com/blog/821" class="user-mention">@mention</a> a GitHub username to generate a link to their profile. The resulting <code>&lt;a&gt;</code> element will link to the contributor's GitHub Profile. For example: In 2007, Chris Wanstrath (<a href="https://github.com/defunkt" class="user-mention">@defunkt</a>), PJ Hyett (<a href="https://github.com/pjhyett" class="user-mention">@pjhyett</a>), and Tom Preston-Werner (<a href="https://github.com/mojombo" class="user-mention">@mojombo</a>) founded GitHub.</p>
+<script>
+	(function($) {
+		$('.editr').editr();
+	})(jQuery);
+</script>
 
-<h3>Support or Contact</h3>
-
-<p>Having trouble with Pages? Check out the documentation at <a href="http://help.github.com/pages">http://help.github.com/pages</a> or contact <a href="mailto:support@github.com">support@github.com</a> and we’ll help you sort it out.</p>
-      </section>
-    </div>
-
-    <!-- FOOTER  -->
-    <div id="footer_wrap" class="outer">
-      <footer class="inner">
-        <p class="copyright">Editr maintained by <a href="https://github.com/Idered">Idered</a></p>
-        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
-      </footer>
-    </div>
-
-    
-
-  </body>
+<script src="//platform.twitter.com/widgets.js" id="twitter-wjs"></script>
+</body>
 </html>
