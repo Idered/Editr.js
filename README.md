@@ -17,15 +17,11 @@ You can see it [here](http://idered.pl/editr/)
 
 ```
 .
-|--- index.html
 |---. editr
 |   |--- editr.js
 |   |--- editr.css
 |   `--- items
 ```
-
-**index.html**
-Sample page with embedded Editr.
 
 **editr**
 Folder containing Editr script, style and projects folder
