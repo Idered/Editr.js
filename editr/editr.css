@@ -116,7 +116,6 @@
 }
 
 .editr__content > * {
-	background: #f7f8fa;
 	border: 0;
 	padding: 0;
 	top: 0;
@@ -125,6 +124,7 @@
 	height: 100%;
 	border: none;
 	position: absolute !important;
+	background: #272822;
 	border: 1px solid #bbc0ca;
 	border-radius: 0 0 3px 3px;
 	-webkit-box-sizing: border-box;
@@ -133,16 +133,5 @@
 }
 
 .editr__editor {
-	color: #68707c;
-	font-size: .875em;
-	line-height: 1.5em;
-	resize: none;
 	display: none;
-	box-shadow: 0 1px 3px 1px rgba(187, 192, 202, .3) inset;
-	font-family: "Monaco", "Inconsolata", "Andale Mono", "Lucida Console", "Bitstream Vera Sans Mono", "Courier New", Courier, monospace;
-}
-
-.editr__editor:focus {
-	border-color: #a1a5ae;
-	outline: none;
 }

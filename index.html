@@ -23,33 +23,32 @@
 			max-width: 960px;
 		}
 
-		@-webkit-keyframes pulse { 0% { border-bottom-width: 1px } 50% { border-bottom-width: 3px; } 100% { border-bottom-width: 1px } }
-		@-moz-keyframes pulse { 0% { border-bottom-width: 1px } 50% { border-bottom-width: 3px; } 100% { border-bottom-width: 1px }	}
-		@-o-keyframes pulse { 0% { border-bottom-width: 1px } 50% { border-bottom-width: 3px; } 100% { border-bottom-width: 1px } }
-		@keyframes pulse { 0% { border-bottom-width: 1px } 50% { border-bottom-width: 3px; } 100% { border-bottom-width: 1px } }
-
 		h1 a {
-			color: #333;
+			color: #FD9173;
 			text-decoration: none;
 			position: relative;
 			display: inline-block;
-			border-bottom: 1px dotted #bbb;
 		}
 
-		h1 a:hover:after {
-			top: 100%;
-			content: '';
-			width: 100%;
-			display: block;
-			position: absolute;
-			border-bottom: 1px solid #f00;
-			-webkit-animation: pulse .25s ease;
-			   -moz-animation: pulse .25s ease;
-			    -ms-animation: pulse .25s ease;
-			     -o-animation: pulse .25s ease;
-			        animation: pulse .25s ease;
+		h1 a:hover {
+			color: #2AC4C0;
 		}
+
 		h1 span { color: #bbb; }
+
+		.share {
+			padding: 1em 0;
+			margin-bottom: 1.5em;
+			text-align: center;
+			border-top: 1px solid #efefef;
+			border-bottom: 1px solid #efefef;
+		}
+
+		.share > * {
+			display: inline-block;
+			vertical-align: middle;
+		}
+
 	</style>
 
 	<!-- Editr style -->
@@ -57,7 +56,20 @@
 </head>
 <body>
 
+<a href="http://git.io/editr"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_orange_ff7600.png" alt="Fork me on GitHub"></a>
+
 <h1><a href="http://git.io/editr">Editr</a> <span>- HTML, CSS, JS playground</span></h1>
+
+<div class="share">
+	<!-- @see ghbtns.com -->
+	<iframe src="http://ghbtns.com/github-btn.html?user=Idered&repo=editr&type=watch&count=true" allowtransparency="true" frameborder="0" scrolling="0" width="120" height="20"></iframe>
+	<iframe src="http://ghbtns.com/github-btn.html?user=Idered&repo=editr&type=fork&count=true" allowtransparency="true" frameborder="0" scrolling="0" width="120" height="20"></iframe>
+	<!-- @see dev.twitter.com/docs/tweet-button -->
+	<a href="https://twitter.com/share" class="twitter-share-button" data-text="Editr - HTML, CSS, JavaScript playground" data-url="https://github.com/Idered/editr" data-via="Idered">Tweet</a>
+	<!-- @see dev.twitter.com/docs/follow-button -->
+	<a href="https://twitter.com/Idered" class="twitter-follow-button" data-show-count="false">Follow @Idered</a>
+</div>
+<!-- /.share -->
 
 <!-- Editr item -->
 <div class="editr" data-item="flat-ui" data-files="switch.html;radio.html;!normalize.css;radio.css;switch.css"></div>
@@ -73,5 +85,7 @@
 		$('.editr').editr();
 	})(jQuery);
 </script>
+
+<script src="//platform.twitter.com/widgets.js" id="twitter-wjs"></script>
 </body>
 </html>
