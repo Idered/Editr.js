@@ -88,6 +88,11 @@
 	border-top: 0;
 }
 
+.editr__bar > :first-child .editr__subnav {
+	left: 0;
+	border-left: 0;
+}
+
 .editr__bar .has-many li:hover > ul {
 	display: block;
 }
