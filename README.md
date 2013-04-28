@@ -11,7 +11,7 @@ Editr is HTML, CSS and JavaScript playground that you can host on your server.
 
 ## Demo
 
-You can see it [here](http://5minfork.com/Idered/editr)
+You can see it [here](http://idered.pl/editr/)
 
 ## Structure
 
