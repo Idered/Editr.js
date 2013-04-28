@@ -79,10 +79,8 @@
 .editr__bar .editr__subnav {
 	left: -1px;
 	top: 100%;
-	margin-top: -1px;
 	z-index: 5;
 	display: none;
-	padding-top: 1px;
 	position: absolute;
 	border: 1px solid #e4e6ea;
 	border-top: 0;

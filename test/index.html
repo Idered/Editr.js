@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<title>Editr - HTML, CSS, JavaScript playground</title>
+
+	<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/normalize/2.1.0/normalize.css">
+	<style>
+		html {
+			font: 400 1em/1.5 "Open Sans", sans-serif;
+			background-color: #fff;
+			color: #666;
+			-webkit-font-smoothing: antialiased;
+			-webkit-text-size-adjust: 100%;
+			-ms-text-size-adjust: 100%;
+		}
+
+		body {
+			margin: 0 auto;
+			padding: 1em;
+			max-width: 960px;
+		}
+	</style>
+	<!-- Editr style -->
+	<link rel="stylesheet" href="../editr/editr.css">
+</head>
+<body>
+<!-- Editr item -->
+<div class="editr" data-item="flat-ui" data-files="switch.html;radio.html;!normalize.css;radio.css;switch.css"></div>
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+
+<!-- Editr js -->
+<script src="http://d1n0x3qji82z53.cloudfront.net/src-min-noconflict/ace.js"></script>
+<script src="../editr/editr.js"></script>
+
+<script>
+	(function($) {
+		$('.editr').editr({
+			path: 'projects'
+		});
+	})(jQuery);
+</script>
+</body>
+</html>
