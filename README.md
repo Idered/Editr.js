@@ -28,7 +28,7 @@ You can see it [here](http://5minfork.com/Idered/editr)
 Sample page with embedded Editr.
 
 **editr**
-Folder containing Editr script, style and projects
+Folder containing Editr script, style and projects folder
 
 **editr.js**
 Editr main script. It's quite clean and have some comments so have fun with changing it.
