@@ -115,7 +115,8 @@ $.fn.editr = function (opts) {
                 hidden: [],
                 html: [],
                 css: [],
-                js: []
+                js: [],
+                less: []
             };
 
         // Remove trailing slash in path
@@ -135,7 +136,8 @@ $.fn.editr = function (opts) {
             __.buildList(files.html, 'Result', 'result'),
             __.buildList(files.html, 'HTML', 'html'),
             __.buildList(files.css, 'CSS', 'css'),
-            __.buildList(files.js, 'JavaScript', 'js')
+            __.buildList(files.js, 'JavaScript', 'js'),
+            __.buildList(files.less, 'LESS CSS', 'less')
         ]))
 
         // Add content wrapper
@@ -264,6 +266,19 @@ $.fn.editr = function (opts) {
                         result[0].contentWindow.eval( ace.edit(this.id).getValue() );
 
                     });
+                    
+                    // Add LESS CSS
+                    $( __.getEditor(editor, 'less').get().reverse() ).each(function() {
+                        var parser = new(less.Parser);
+                        parser.parse(ace.edit(this.id).getValue(), function (err, tree) {
+                            if (err) { return console.error('LESS CSS Error: ' + err) }
+
+                            head.append(__.obj('style', {
+                                class: 'editr-stylesheet',
+                                text: tree.toCSS()
+                            }));
+                        });
+                    });
 
                     // Show result iframe
                     result.fadeIn().siblings().hide();
@@ -301,6 +316,20 @@ $.fn.editr = function (opts) {
                         __.obj('script', {
                             src: this.slice(1)
                         }).appendTo(head);
+
+                    } else if ( __.getExt(this) === 'less' ) {
+                        
+                        $.get([opts.path, item, this.slice(1)].join('/'), function(response) {
+                            var parser = new(less.Parser);
+                            parser.parse(response, function (err, tree) {
+                                if (err) { return console.error('LESS CSS Error: ' + err) }
+    
+                                head.append(__.obj('style', {
+                                    class: 'editr-stylesheet',
+                                    text: tree.toCSS()
+                                }));
+                            });
+                        });
 
                     }
                 });
