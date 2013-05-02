@@ -20,7 +20,10 @@ You can see it [here](http://idered.pl/editr/)
 |---. editr
 |   |--- editr.js
 |   |--- editr.css
-|   `--- items
+|   |--- items
+|   |---. parsers
+|       |--- less.js
+|       |--- coffeescript.js
 ```
 
 **editr**
@@ -34,6 +37,9 @@ Editr style, it contains only some basic style so you can easily customize it.
 
 **items**
 Folder containing all your projects.
+
+**parsers**
+Put here your HTML, CSS, JS preprocessors. Contains LESS and CoffeeScript by default.
 
 ## Dependencies
 
@@ -57,12 +63,19 @@ and this before `</body>`:
 <script src="/editr/editr.js"></script>
 ```
 
+Additionally you can add LESS and CoffeeScript compilers if you're going to use them:
+
+```html
+<script src="/parsers/coffeescript.js"></script>
+<script src="/parsers/less.js"></script>
+```
+
 ## How to embed Editr
 
 To embed Editr on your site, create a div with this attributes:
 
 ```html
-<div class="editr" data-item="flat-ui" data-files="switch.html; radio.html; !normalize.css; radio.css; switch.css"></div>
+<div class="editr" data-item="flat-ui" data-files="switch.html; radio.html; !normalize.css; radio.css; switch.css; main.less script.coffee"></div>
 ```
 
 and start Editr with jQuery:
@@ -71,7 +84,7 @@ and start Editr with jQuery:
 $('.editr').editr();
 ```
 
-This will load `/editr/items/flat-ui/` project. This path is based on data-path and data-item or values passed in JS object.
+This will load `/editr/items/flat-ui/` project. This path is based on data-path and data-item or values passed in JS object. Default path is: `/editr/items`.
 
 First html file(`switch.html` in this case) is used as main preview.
 
@@ -92,6 +105,26 @@ In this example, `normalize.css` will be added to preview but it won't be visibl
 * `theme` ACE Editor theme
 * `callback` A function that is called after files are loaded.
 * `path` This is used as default path for projects so you don't have to add it as html attribute. HTML attribute `data-path` will overwrite this default.
+* `parsers` Used to add custom HTML, CSS, JS preprocessors:
+
+```js
+parsers: {
+	'less': {
+		type: 'css',
+		filetype: 'less',
+		fn: function(str) {
+			var parser = new(less.Parser),
+				parsed = '';
+
+			parser.parse(str, function (err, tree) {
+				if (err) { return console.error(err) }
+				parsed = tree.toCSS();
+			});
+
+			return parsed;
+		}
+	}
+}
 
 ## License
 

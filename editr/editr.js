@@ -18,15 +18,15 @@ $.fn.editr = function (opts) {
          */
         buildList: function(names, type, klass) {
             var result = __.obj('ul', {
-                class: 'editr__link--' + klass + (names.length > 1 ? ' has-many' : '')
-            });
+                    class: 'editr__link--' + klass + (names.length > 1 ? ' has-many' : '')
+                });
 
             result.append( __.obj('li').append(
                 __.obj('a', {
                     href: '#',
                     text: type
                 }).attr({
-                    'data-type': klass,
+                    'data-type': klass === 'result' ? klass : __.getExt('' + $(names).last()[0]),
                     'data-id': 1
                 })
             ).append( __.obj('ul', { class:'editr__subnav' }) ));
@@ -41,7 +41,7 @@ $.fn.editr = function (opts) {
                         href: '#',
                         text: this
                     }).attr({
-                        'data-type': klass,
+                        'data-type': klass === 'result' ? klass : __.getExt('' + this),
                         'data-id': ++i
                     })
                 ));
@@ -119,13 +119,24 @@ $.fn.editr = function (opts) {
             };
 
         // Remove trailing slash in path
-        opts.path = opts.path.replace(/\/$/, '')
+        opts.path = opts.path.replace(/\/$/, '');
 
         // Split file names into categories by ext type
         $.each(files.all, function() {
-            files[ __.isHidden(this) ? 'hidden' : __.getExt(this)].push('' + this);
-        });
+            var ext = __.getExt('' + this);
 
+            if ( __.isHidden(this) ) {
+                files['hidden'].push('' + this);
+            } else if ( $.isArray(files[ext]) ) {
+                files[ext].push('' + this);
+            } else if ( EditrParsers[ext] ) {
+                files[EditrParsers[ext].type].push('' + this);
+            } else {
+                var filename = this + '';
+                console.log("Editr: Parser for " + filename + " isn't definied.");
+                files.all = files.all.filter(function(file) { return file != filename; });
+            }
+        });
 
         // Build editor
         editor
@@ -159,12 +170,11 @@ $.fn.editr = function (opts) {
                     // Add textareas for all files
                     $(files[filetype]).each(function(i) {
 
-                        var strongFiletype = filetype,
+                        var strongFiletype = __.getExt(this + ''),
                             textarea = __.createEditor(i, strongFiletype, editor.find('.editr__content'), opts.theme);
 
                         // Load file content
                         $.get([opts.path, item, this].join('/'), function(response) {
-
 
                             // Track num of loaded files
                             ++loadedFiles;
@@ -174,21 +184,7 @@ $.fn.editr = function (opts) {
                             }
 
                             if ( strongFiletype === 'html' ) {
-                                response = response
-                                    .replace(/body\b[^>]*>/, '<body><div class="body">')
-                                    .replace('</body>', '</body>');
-
-                                response = __.obj('div').html(response);
-                                response.find('script, link, style').remove();
-                                response = response.find('.body').html();
-
-                                response = response
-                                    // remove empty lines
-                                    .replace(/[\r\n]+/gi, '\n')
-                                    // remove empty line at the beginning
-                                    .replace(/^[\r\n]/gi, '')
-                                    // remove empty line at the end
-                                    .replace(/[\n\r]$/gi, '');
+                                response = EditrParsers[strongFiletype].fn(response);
                             }
 
                             textarea.setValue(response);
@@ -248,45 +244,58 @@ $.fn.editr = function (opts) {
                     // Remove old css
                     head.find('.editr-stylesheet').remove();
 
-                    // Add css
-                    $( __.getEditor(editor, 'css').get().reverse() ).each(function() {
+                    for ( var parser in EditrParsers ) {
 
-                        head.append(__.obj('style', {
-                            class: 'editr-stylesheet',
-                            text: ace.edit(this.id).getValue()
-                        }));
+                        // Add css
+                        if (EditrParsers[parser].type === 'css') {
+                            $( __.getEditor(editor, parser).get().reverse() ).each(function() {
+                                var val = EditrParsers[parser].fn(ace.edit(this.id).getValue());
+                                head.append(__.obj('style', {
+                                    class: 'editr-stylesheet',
+                                    text: val
+                                }));
 
-                    });
+                            });
+                        }
 
-                    // Add JS
-                    $( __.getEditor(editor, 'js').get().reverse() ).each(function() {
+                        // Add JS
+                        if (EditrParsers[parser].type === 'js') {
+                            $( __.getEditor(editor, parser).get().reverse() ).each(function() {
 
-                        result[0].contentWindow.eval( ace.edit(this.id).getValue() );
+                                var val = EditrParsers[parser].fn(ace.edit(this.id).getValue());
 
-                    });
+                                result[0].contentWindow.eval( val );
+
+                            });
+                        }
+
+                    }
 
                     // Show result iframe
-                    result.fadeIn().siblings().hide();
+                    result.show().siblings().hide();
 
                 // Show textarea
                 } else {
 
                     aceEditor = __.getEditor(editor, $this.attr('data-type'), $this.attr('data-id'));
 
-                    aceEditor.fadeIn().siblings().hide();
+                    aceEditor.show().siblings().hide();
                     ace.edit(aceEditor.attr('id')).resize();
 
                 }
             });
 
+            // Preload result iframe
             editor.find('.editr__result').load(function() {
 
                 result = $(this);
                 body   = result.contents().find('body');
                 head   = result.contents().find('head');
 
+                // Clean iframe
                 result.contents().find('link, style').remove().end().find('body').empty();
 
+                // Add hidden stylesheets and scripts
                 $(files.hidden).each(function() {
 
                     if ( __.getExt(this) === 'css' ) {
@@ -310,16 +319,72 @@ $.fn.editr = function (opts) {
             });
         };
 
-    };
+    },
+
+    EditrParsers = EditrParsers || {};
 
     $(this).each(function() {
 
         var settings = $.extend({
-            editor: $(this),
-            theme: 'monokai',
-            path: 'editr/items',
-            callback: function() {}
-        }, opts);
+                editor: $(this),
+                theme: 'monokai',
+                path: 'editr/items',
+                parsers: {},
+                callback: function() {}
+            }, opts),
+
+            parsers = {
+                'html': {
+                    type: 'html',
+                    filetype: 'html',
+                    fn: function(str) {
+                        str = str
+                            .replace(/body\b[^>]*>/, '<body><div class="body">')
+                            .replace('</body>', '</body>');
+
+                        str = __.obj('div').html(str);
+
+                        str.find('script, link, style').remove();
+                        str = str.find('.body').html();
+
+                        str = str
+                            // replace multiple empty lines with one empty line
+                            .replace(/[\r\n]+/gi, '\n')
+                            // remove first and last empty line
+                            .replace(/^[\r\n]|[\n\r]$/gi, '');
+
+                        return str;
+                    }
+                }, 'css': {
+                    type: 'css',
+                    filetype: 'css',
+                    fn: function(str) { return str; }
+                }, 'js': {
+                    type: 'js',
+                    filetype: 'js',
+                    fn: function(str) { return str; }
+                }, 'less': {
+                    type: 'css',
+                    filetype: 'less',
+                    fn: function(str) {
+                        var parser = new(less.Parser),
+                            parsed = '';
+
+                        parser.parse(str, function (err, tree) {
+                            if (err) { return console.error(err) }
+                            parsed = tree.toCSS();
+                        });
+
+                        return parsed;
+                    }
+                }, 'coffee': {
+                    type: 'js',
+                    filetype: 'coffee',
+                    fn: function(str) {
+                        return CoffeeScript.compile(str);
+                    }
+                }
+            };
 
         if ( $(this).data('path') ) {
             settings.path = $(this).data('path');
@@ -328,6 +393,10 @@ $.fn.editr = function (opts) {
         if ( $(this).data('theme') ) {
             settings.theme = $(this).data('theme');
         }
+
+        settings.parsers = $.extend(settings.parsers, parsers);
+
+        EditrParsers = settings.parsers;
 
         new Editr(settings);
 

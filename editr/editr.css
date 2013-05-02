@@ -86,6 +86,10 @@
 	border-top: 0;
 }
 
+.editr__bar > :first-child > li > a {
+	border-top-left-radius: 5px;
+}
+
 .editr__bar > :first-child .editr__subnav {
 	left: 0;
 	border-left: 0;
