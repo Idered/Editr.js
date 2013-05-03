@@ -98,7 +98,7 @@ In this example, `normalize.css` will be added to preview but it won't be visibl
 * `data-path`(optional) Path to folder with projects.
 * `data-theme`(optional) ACE Editor theme
 * `data-hide`(optional) This attribute allows you to hide elements from Editr toolbar. Values: `all, result, html, css, js`.
-* `data-files` List of files names separated by `;` which you want to show inside editor. If file name(or path) is preceeded with `!` then this file will be loaded inside editor but it won't be visible and editable. You an also put here paths to files e.g. `js/script.js` or 	`//cdnjs.cloudflare.com/ajax/libs/jade/0.27.7/jade.min.js`.
+* `data-files` List of files names separated by `;` which you want to show inside editor. If file name(or path) is preceeded with `!` then this file will be loaded inside editor but it won't be visible and editable. You an also put here paths to files e.g. `js/script.js`.
 
 ### Passed in JavaScript
 
