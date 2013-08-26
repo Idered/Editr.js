@@ -130,8 +130,8 @@ parsers: {
 
 ## License
 
-~~MIT Licensing~~~
+~~MIT Licensing~~
 
-**GPL v3 Licensing--
+**GPL v3 Licensing**
 
 Copyright (c) 2013 Kasper Mikiewicz
