@@ -740,7 +740,7 @@
 
                         ace.edit(aceEditor.attr('id')).resize();
                     }
-                });
+                }).first().trigger('click');
 
                 if (__.isPaneled()) {
                     var categories = ['html', 'css', 'js'];

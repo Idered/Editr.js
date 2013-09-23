@@ -71,7 +71,7 @@ and this before `</body>`:
 <script src="/editr/editr.js"></script>
 ```
 
-Additionally you can add(befor Editr script) LESS and CoffeeScript compilers if you're going to use them:
+Additionally you can add(before Editr script) LESS and CoffeeScript compilers if you're going to use them:
 
 ```html
 <script src="/editr/parsers/coffeescript.js"></script>
@@ -92,7 +92,7 @@ $('.editr').each(function() {
 });
 ```
 
-This will load project named 'PROJECT-NAME' from 'items/' folder(Editr default value). Files pased in data-files-[html/css/js] will be loaded in a queue. Files with '!' before name will be hidden from Editr navigation bar.
+This will load project named 'PROJECT-NAME' from 'items/' folder(Editr default value). Files passed in data-files-[html/css/js] will be loaded in a queue. Files with '!' before name will be hidden from Editr navigation bar.
 
 
 ## Options
@@ -106,7 +106,7 @@ view | `single` | Editr layout view. Other options: `horizontal`, `vertical`.
 path | `items` | Path to folder with projects.
 theme | `monokai` | ACE Editor theme.
 hide | `null` | This attribute allows you to hide elements from Editr toolbar. Values: `all result html css js`.
-readonly | `false` | Make Editr textaread read-only.
+readonly | `false` | Make Editr textarea read-only.
 files-html | `null` | HTML Files. Base64 supported.
 files-css | `null` | CSS Files. LESS is supported. Base64 supported.
 files-js | `null` | JavaScript Files. CoffeeScript is supported. Base64 supported.
@@ -115,7 +115,7 @@ files-js | `null` | JavaScript Files. CoffeeScript is supported. Base64 supporte
 
  * `data-` attributes overwrites options passed via JS.
  * Files passed in files-[html,css,js] should be separated by `;`.
- * Add `!` before file name to load file in editor but hide it from naviagtion bar.
+ * Add `!` before file name to load file in editor but hide it from navigation bar.
  * If you want to add Base64 encoded preprocessor code, add preprocessor name before it: coffee:BASE64_STRING or less:BASE64_STRING.
 
 ### Via JavaScript
@@ -125,7 +125,7 @@ Name | Default | Description
 view | `single` | Editr layout view. Other options: `horizontal`, `vertical`.
 path | `items` | Path to folder with projects.
 theme | `monokai` | ACE Editor theme.
-readonly | `false` | Make Editr textaread read-only.
+readonly | `false` | Make Editr textarea read-only.
 callback | `function (editor) {}` | Callback triggered after all files are loaded and Editr is ready. Editr object is passed as an argument, use wisely.
 parsers | Check source | You can add custom parsers for preprocessors. Check source for more info.
 
