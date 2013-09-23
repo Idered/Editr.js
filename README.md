@@ -14,6 +14,8 @@ You can check demo and read more about features [here](http://lab.idered.pl/edit
 |   |--- editr.js
 |   |--- editr.css
 |   |--- items
+|   |---. items
+|       |--- index.html
 |   |---. parsers
 |       |--- less.js
 |       |--- coffeescript.js
@@ -30,6 +32,9 @@ Editr style, it contains only some basic style so you can easily customize it.
 
 **items**
 Folder containing all your projects(can be configured).
+
+**index.html**
+Required file with basic html, used as default file when no files were added for html, css or js.
 
 **parsers**
 Put here your HTML, CSS, JS preprocessors. Contains LESS and CoffeeScript by default.
@@ -106,7 +111,7 @@ files-html | `null` | HTML Files. Base64 supported.
 files-css | `null` | CSS Files. LESS is supported. Base64 supported.
 files-js | `null` | JavaScript Files. CoffeeScript is supported. Base64 supported.
 
-** Notes: **
+**Notes:**
 
  * `data-` attributes overwrites options passed via JS.
  * Files passed in files-[html,css,js] should be separated by `;`.
