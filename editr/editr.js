@@ -147,9 +147,6 @@
                     class: 'editr__content'
                 }).appendTo(editor);
 
-                // Build editors
-                el.editors = build.editors();
-
                 // Build preview iframe
                 el.preview.frame = build.preview().appendTo(el.content);
             },
@@ -233,14 +230,15 @@
                         .find('link, style').remove().end()
                         .find('body').empty();
 
-                    // Load preview of first html file
-                    el.nav.find('.editr__nav-label').first().trigger('click');
+                    // Build editors
+                    el.editors = build.editors();
                 });
             },
 
             /**
              * Compose editors
              */
+
             editors: function () {
                 var editors = {},
                     file;
@@ -582,8 +580,12 @@
                     return;
                 }
 
-                $.get([opts.path, data.item, file.name].join('/'), function (response) {
-                    __.fileContentCallback(file, response);
+                $.ajax({
+                    url: [opts.path, data.item, file.name].join('/'),
+                    success: function (response) {
+                        __.fileContentCallback(file, response);
+                    },
+                    cache: false
                 });
             },
 
