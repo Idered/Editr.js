@@ -6,16 +6,16 @@
  * http://opensource.org/licenses/GPL-3.0
  *
  * Github:  http://github.com/idered/Editr.js/
- * Version: 2.1.0
+ * Version: 2.2.0
  */
 
-(function (w) {
+(function(w) {
 
     'use strict';
 
     var EditrInstances = EditrInstances || [];
 
-    var Editr = function (opts) {
+    var Editr = function(opts) {
 
         EditrInstances.push(this);
 
@@ -36,7 +36,7 @@
                 'html': {
                     type: 'html',
                     extension: 'html',
-                    fn: function (str, isEncoded) {
+                    fn: function(str, isEncoded) {
                         str = str
                             .replace(/body\b[^>]*>/, '<body><div class="body">')
                             .replace('</body>', '</body>');
@@ -63,26 +63,26 @@
                 'css': {
                     type: 'css',
                     extension: 'css',
-                    fn: function (str) {
+                    fn: function(str) {
                         return str;
                     }
                 },
                 'js': {
                     type: 'js',
                     extension: 'js',
-                    fn: function (str) {
+                    fn: function(str) {
                         return str;
                     }
                 },
                 'less': {
                     type: 'css',
                     extension: 'less',
-                    fn: function (str) {
+                    fn: function(str) {
                         var parser = new(less.Parser),
                             parsed = '',
                             error;
 
-                        parser.parse(str, function (err, tree) {
+                        parser.parse(str, function(err, tree) {
                             if (err) {
                                 error = err;
                                 return err;
@@ -96,7 +96,7 @@
                 'coffee': {
                     type: 'js',
                     extension: 'coffee',
-                    fn: function (str) {
+                    fn: function(str) {
                         return CoffeeScript.compile(str);
                     }
                 }
@@ -106,7 +106,7 @@
             path: 'items',
             loadingText: '',
             theme: 'monokai',
-            callback: function () {}
+            callback: function() {}
         }, opts);
 
         var htmlOpts = ['path', 'readonly', 'theme', 'view', 'loadingText'];
@@ -123,15 +123,21 @@
 
         // Project data - files, name, etc.
         var data = {
+            gists: {},
+            files: {
+                html: [],
+                css: [],
+                js: []
+            },
             activeItem: -1,
-            filesLoaded: []
+            filesLoaded: 0
         };
 
         var build = {
             /**
              * Compose Editr parts - nav, content, loader
              */
-            ui: function () {
+            ui: function() {
                 el.editor.addClass('editr-view--' + opts.view);
 
                 // Build bar
@@ -155,7 +161,7 @@
              * Build Editr nav
              * @return {object}
              */
-            nav: function () {
+            nav: function() {
                 var navs = [];
 
                 navs.push(build.navList('html', 'Result', 'result'));
@@ -174,7 +180,7 @@
              * @param  {string} label
              * @return {string}
              */
-            navList: function (type, label, pseudoType) {
+            navList: function(type, label, pseudoType) {
                 var files = data.files[type],
                     nav, subnav;
 
@@ -203,7 +209,7 @@
                         'data-extension': files[i].extension,
                         'data-is-encoded': files[i].isEncoded,
                         class: 'editr__nav-label',
-                        text: files[i].name
+                        text: files[i].filename
                     }));
                 };
 
@@ -213,14 +219,20 @@
             /**
              * Setup preview iframe, load preview of first html file
              */
-            preview: function () {
-                var firstFile = data.files.html[0];
+            preview: function() {
+                var index = data.files.html[0],
+                    iframeSrc = [opts.path, data.item, index.filename].join('/');
+
+                // We don't have a real file on server so we have to point it to default index.html
+                if (index.isEncoded || index.isDefault || index.isGist) {
+                    iframeSrc = opts.path + '/index.html';
+                }
 
                 return __.obj('iframe', {
                     class: 'editr__result',
                     name: 'editr_' + get.randomID(),
-                    src: firstFile.isEncoded || firstFile.isDefault ? opts.path + '/index.html' : [opts.path, data.item, data.files.html[0].name].join('/')
-                }).load(function () {
+                    src: iframeSrc
+                }).load(function() {
                     el.preview.result = $(this);
                     el.preview.body = el.preview.result.contents().find('body');
                     el.preview.head = el.preview.result.contents().find('head');
@@ -239,7 +251,7 @@
              * Compose editors
              */
 
-            editors: function () {
+            editors: function() {
                 var editors = {},
                     file;
 
@@ -272,11 +284,11 @@
              * @param  {object} file
              * @return {object}
              */
-            editor: function (file, id) {
+            editor: function(file, id) {
                 var aceEditor,
                     textarea = __.obj('div', {
                         id: 'editr_' + get.randomID(),
-                        class: 'editr__editor editr__editor--' + (file.type || file.extension) // + ' editr__editor--' + (file.type || file.extension) + '-' + (id)
+                        class: 'editr__editor editr__editor--' + (file.type || file.extension)
                     }).appendTo(el.content);
 
                 aceEditor = ace.edit(textarea.attr('id'));
@@ -289,7 +301,7 @@
 
                 aceEditor.setReadOnly(opts.readonly);
 
-                aceEditor.on('change', function () {
+                aceEditor.on('change', function() {
                     if (data.activeItem !== -1) {
                         __.renderPreview(data.files.html[data.activeItem]);
                     }
@@ -308,7 +320,7 @@
              * @param  {Function || Object} fn
              * @return {jQuery}
              */
-            obj: function (type, attrs, fn) {
+            obj: function(type, attrs, fn) {
                 return $('<' + type + '>', attrs).on(fn);
             },
 
@@ -316,7 +328,7 @@
              * Check if Editr editor is in panel view
              * @return {Boolean}
              */
-            isPaneled: function () {
+            isPaneled: function() {
                 return ['horizontal', 'vertical'].indexOf(opts.view) != -1;
             },
 
@@ -325,15 +337,15 @@
              * @param  {Function} fn
              * @return {Function}
              */
-            debounce: function (fn) {
+            debounce: function(fn) {
                 var timer = null;
 
-                return function () {
+                return function() {
                     var context = this,
                         args = arguments;
 
-                    timer = setInterval(function () {
-                        if (data.filesLoaded.length === data.filesTotal) {
+                    timer = setInterval(function() {
+                        if (data.filesLoaded === data.filesTotal) {
                             fn.call(context, args);
                         }
                     }, 50);
@@ -341,12 +353,34 @@
             },
 
             /**
+             * Get length of object
+             * @param  {object} obj
+             * @return {Integer}
+             */
+            size: function(obj) {
+                var size = 0, key;
+                for (key in obj) {
+                    if (obj.hasOwnProperty(key)) size++;
+                }
+                return size;
+            },
+
+            /**
              * Check if fille is hidden
              * @param  {string}  filename
              * @return {Boolean}
              */
-            isHidden: function (filename) {
+            isHidden: function(filename) {
                 return filename.indexOf('!') === 0;
+            },
+
+            /**
+             * Check if fille is a gist
+             * @param  {string}  filename
+             * @return {Boolean}
+             */
+            isGist: function(filename) {
+                return filename.indexOf('$') === 0;
             },
 
             /**
@@ -354,7 +388,7 @@
              * @param  {string}  str
              * @return {Boolean}
              */
-            isEncoded: function (str) {
+            isEncoded: function(str) {
                 return /^([A-Za-z0-9+/]{4})*([A-Za-z0-9+/]{4}|[A-Za-z0-9+/]{3}=|[A-Za-z0-9+/]{2}==)$/.test(str);
             },
 
@@ -364,7 +398,7 @@
              * @param  {string} data
              * @return {string}
              */
-            base64Decode: function (data) {
+            base64Decode: function(data) {
                 var b64 = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
                 var o1, o2, o3, h1, h2, h3, h4, bits, i = 0,
                     ac = 0,
@@ -404,30 +438,127 @@
             },
 
             /**
+             * Add file to global array
+             * @param {String}  type       File type
+             * @param {String}  filename
+             * @param {Boolean} isDefault
+             * @param {Boolean} isGistFile
+             * @param {Integer}  gistID
+             */
+            addFile: function(type, filename, isDefault, isGistFile, gistID) {
+                // Create single file object with defaults
+                var file = {
+                    content: '',
+                    type: '',
+                    isDefault: isDefault,
+                    isGist: false,
+                    isGistFile: isGistFile ? true : false,
+                    gistID: gistID ? gistID : null
+                };
+
+                file.id = data.files[type].length;
+
+                file.filename = filename;
+
+                // Check if file should be hidden from navigation
+                file.isHidden = __.isHidden(file.filename);
+
+                if (file.isHidden) {
+                    // Remove '!'
+                    file.filename = file.filename.replace(/^\!/, '');
+                }
+
+                // Check if file is gist
+                file.isGist = __.isGist(file.filename);
+
+                if (file.isGist) {
+                    // Remove '$'
+                    file.filename = file.filename.replace(/^\$/, '');
+
+                    var gistFiles = file.filename.split(','),
+                        gistID = gistFiles[0];
+
+                    // Create empty object for gist data loaded later
+                    data.gists[gistID] = {};
+
+                    // Remove gist id so only filenames left
+                    gistFiles.shift();
+
+                    for (var i = 0; i < gistFiles.length; i++) {
+                        __.addFile(type, gistFiles[i], false, true, gistID);
+                    }
+
+                    return;
+                }
+
+                //  Get parser
+                file.parser = get.parser(file.filename);
+
+                if (file.parser) {
+                    // Remove parser name from filename
+                    file.filename = file.filename.replace(file.parser + ':', '');
+                }
+
+                // Check if file is Base64 encoded
+                // Gist can't be encoded
+                file.isEncoded = file.isGist ? false : __.isEncoded(file.filename);
+
+                if (!file.isGist && file.isEncoded) {
+                    // File is encoded so filename is actualy a code
+                    file.content = __.base64Decode(file.filename);
+
+                    // Create a real name for file
+                    file.filename = 'file ' + (i + 1) + '.' + type;
+                }
+
+                // Get file type - html, css or js
+                if (file.parser) {
+                    if (opts.parsers[file.parser]) {
+                        file.type = opts.parsers[file.parser].type;
+                    }
+
+                    file.extension = file.parser;
+                } else {
+                    file.type = get.extension(file.filename);
+
+                    file.extension = file.isEncoded ? type : file.type;
+                }
+
+                // Add file to global files array
+                data.files[type].push(file);
+            },
+
+            /**
              * Callback for loaded files, parse their content
              * @param  {object} file
              * @param  {string} code
              */
-            fileContentCallback: function (file, code) {
+            fileContentCallback: function(file, content) {
                 if (file.isEncoded) {
-                    code = file.code;
+                    content = file.content;
                 }
 
-                data.filesLoaded.push(file);
+                if (file.isGistFile) {
+                    file.content = data.gists[file.gistID].files[file.filename].content;
 
-                if (data.filesLoaded.length === data.filesTotal) {
+                    content = file.content;
+                }
+
+                ++data.filesLoaded;
+
+                if (data.filesLoaded === data.filesTotal) {
                     onLoaded.init();
                 }
 
                 if (file.extension === 'html') {
-                    code = opts.parsers[file.extension].fn(code || file.code || '', file.isEncoded);
+                    content = opts.parsers[file.extension].fn(content || file.content || '', file.isEncoded);
                 }
 
-                file.editor.setValue(code);
+                file.editor.setValue(content);
                 file.editor.clearSelection();
             },
 
-            renderPreview: function (file) {
+            renderPreview: function(file) {
                 var fileCSS, fileJS;
                 data.activeItem = file.id;
 
@@ -451,6 +582,7 @@
                         }
 
                         el.preview.head.append(__.obj('style', {
+                            rel: 'stylsheet',
                             text: parsed
                         }));
                     } catch (e) {
@@ -463,12 +595,12 @@
                     file.editor.getValue()
                 );
 
-                // Remove js error flag
 
                 // Add js
                 for (var j = 0; j < data.files.js.length; j++) {
                     fileJS = data.files.js[j];
 
+                    // Remove js error flag
                     $(fileJS.editor.container).removeClass('editr__editor--invalid').removeAttr('data-error');
 
                     try {
@@ -479,6 +611,9 @@
                         $(fileJS.editor.container).addClass('editr__editor--invalid').attr('data-error', 'Error: ' + e.message);
                     }
                 }
+
+                // Force html rerender
+                el.preview.body.hide().show();
             }
         };
 
@@ -490,85 +625,62 @@
              * @param  {bool} withHidden
              * @return {array}
              */
-            files: function (type, withHidden) {
+            files: function(type, withHidden) {
                 var files = editor.data('files-' + type) || '',
-                    code,
-                    filename,
-                    preprocessor,
-                    hiddenFilesTotal = 0,
-                    isEncoded = false,
-                    isHidden,
-                    result = [];
+                    hiddenFilesTotal = 0;
 
                 // Remove last ';'
                 files.replace(/;$/, '');
+
 
                 if (files) {
                     // Split files list to array
                     files = files.replace(/\s/g, '').split(';');
 
-                    // Create single file object
                     for (var i = 0; i < files.length; i++) {
-                        isHidden = __.isHidden(files[i]);
-
-                        if (isHidden) {
-                            files[i] = files[i].substr(1);
-                        }
-
-                        preprocessor = get.preprocessor(files[i]);
-
-                        filename = preprocessor ? files[i].replace(preprocessor + ':', '') : files[i];
-
-                        isEncoded = __.isEncoded(filename);
-
-                        // Remove hidden files if not allowed
-                        if (withHidden || !isHidden) {
-                            if (isEncoded) {
-                                code = filename;
-
-                                if (preprocessor) {
-                                    code = filename.replace(preprocessor + ':');
-                                }
-
-                                filename = 'file ' + (i + 1) + '.' + type;
-                            }
-
-                            result.push({
-                                id: i,
-                                name: filename,
-                                type: preprocessor ? opts.parsers[preprocessor].type : get.extension(files[i]),
-                                code: isEncoded ? __.base64Decode(code) : '',
-                                extension: preprocessor || (isEncoded ? type : get.extension(files[i])),
-                                preprocessor: preprocessor,
-                                isHidden: isHidden,
-                                isDefault: false,
-                                isEncoded: isEncoded
-                            });
-                        }
+                        __.addFile(type, files[i]);
                     }
                 }
 
                 // Check if all files are hidden
-                for (var i = 0; i < result.length; i++) {
-                    if (result[i].isHidden) {
+                for (var i = 0; i < data.files[type].length; i++) {
+                    if (data.files[type][i].isHidden) {
                         hiddenFilesTotal++;
                     }
                 }
 
                 // All files hidden? add default empty file
-                if (hiddenFilesTotal === result.length) {
-                    result.push({
-                        name: 'index.' + type,
-                        code: '',
-                        extension: type,
-                        preprocessor: '',
-                        isHidden: false,
-                        isDefault: true,
-                        isEncoded: false
-                    });
+                if (hiddenFilesTotal === data.files[type].length) {
+                    __.addFile(type, 'index.' + type, true);
+                }
+            },
+
+            /**
+             * Load gist data
+             * @param  {object} gist
+             */
+            gistsData: function(callback) {
+                data.gistsLoaded = 0;
+
+                if (__.size(data.gists) === 0) {
+                    callback();
+                    return;
                 }
 
-                return result;
+                for (var id in data.gists) {
+                    $.ajax({
+                        url: 'https://api.github.com/gists/' + id,
+                        success: function(response) {
+                            data.gists[response.id] = response;
+
+                            ++data.gistsLoaded;
+
+                            if (data.gistsLoaded === __.size(data.gists)) {
+                                callback();
+                            }
+                        }
+                    });
+                }
             },
 
             /**
@@ -576,15 +688,16 @@
              * @param  {ACE Editor} textarea
              * @param  {object} file
              */
-            fileContent: function (file) {
-                if (file.isEncoded) {
+            fileContent: function(file) {
+                // If File is encoded or it's file from  gist then it's already loaded
+                if (file.isEncoded || file.isGistFile) {
                     __.fileContentCallback(file);
                     return;
                 }
 
                 $.ajax({
-                    url: [opts.path, data.item, file.name].join('/'),
-                    success: function (response) {
+                    url: [opts.path, data.item, file.filename].join('/'),
+                    success: function(response) {
                         __.fileContentCallback(file, response);
                     },
                     cache: false
@@ -592,11 +705,11 @@
             },
 
             /**
-             * Get preprocessor name based on string
+             * Get parser name based on string
              * @param  {string} str
              * @return {string}
              */
-            preprocessor: function (str) {
+            parser: function(str) {
                 // Match base64 extension
                 var result = str.match(/^(.*):/) || [];
 
@@ -605,9 +718,9 @@
                 if (!result) {
                     result = get.extension(str);
 
-                    // Check if extension is preprocessor
+                    // Check if extension is parser
                     if (['html', 'css', 'js'].indexOf(result) !== -1) {
-                        result = undefined;
+                        result = null;
                     }
                 }
                 return result;
@@ -619,7 +732,7 @@
              * @param  {int} id
              * @return {ACE }
              */
-            editor: function (type, id) {
+            editor: function(type, id) {
                 return data.files[type][id].editor;
             },
 
@@ -628,7 +741,7 @@
              * @param  {string} type
              * @return {array}
              */
-            hiddenFiles: function (type) {
+            hiddenFiles: function(type) {
                 var files = [];
 
                 for (var i = 0; i < data.files[type].length; i++) {
@@ -645,7 +758,7 @@
              * @param  {string} type
              * @return {int}
              */
-            visibleFilesCount: function (type) {
+            visibleFilesCount: function(type) {
                 var count = 0;
 
                 for (var i = 0; i < data.files[type].length; i++) {
@@ -662,7 +775,7 @@
              * @param  {string} filename
              * @return {string}
              */
-            extension: function (filename) {
+            extension: function(filename) {
                 if (!filename.length) {
                     return null;
                 }
@@ -683,9 +796,9 @@
              * Return random ID
              * @return {string}
              */
-            randomID: function () {
+            randomID: function() {
                 var a, b = b || 16;
-                return Array(a || 8).join(0).replace(/0/g, function () {
+                return Array(a || 8).join(0).replace(/0/g, function() {
                     return (0 | Math.random() * b).toString(b)
                 });
             }
@@ -693,7 +806,7 @@
 
         // Files loaded? Good, fire calback
         var onLoaded = {
-            init: function () {
+            init: function() {
                 // Fire user callback
                 opts.callback(self);
 
@@ -705,15 +818,15 @@
             /**
              * Bind actions for nav items
              */
-            bindNav: function () {
+            bindNav: function() {
                 var tabs = el.nav.find('.editr__nav-item'),
                     navItems = tabs.find('.editr__subnav').children();
 
-                tabs.children('.editr__nav-label').on('click', function () {
+                tabs.children('.editr__nav-label').on('click', function() {
                     $(this).next().children().first().trigger('click');
                 });
 
-                navItems.on('click', function (event) {
+                navItems.on('click', function(event) {
                     var item = $(this),
                         file,
                         aceEditor;
@@ -747,22 +860,25 @@
                 if (__.isPaneled()) {
                     var categories = ['html', 'css', 'js'];
                     for (var i = 0; i < categories.length; i++) {
-                        $(data.files[categories[i]][0].editor.container).addClass('active');
+                        for (var j = 0; j < categories[i].length; j++) {
+                            if (!data.files[categories[i]][j].isHidden) {
+                                $(data.files[categories[i]][j].editor.container).addClass('active');
+                                break;
+                            }
+                        };
                     }
                 }
             }
         };
 
-        var init = function () {
+        var init = function() {
             // Get project name
             data.item = editor.data('item');
 
             // Get project files
-            data.files = {
-                html: get.files('html', true),
-                css: get.files('css', true),
-                js: get.files('js', true)
-            };
+            get.files('html', true);
+            get.files('css', true);
+            get.files('js', true);
 
             // Count files
             data.filesTotal =
@@ -770,7 +886,9 @@
                 get.visibleFilesCount('css') +
                 get.visibleFilesCount('js');
 
-            build.ui();
+            get.gistsData(function() {
+                build.ui();
+            });
         };
 
         // Kick it off
@@ -787,8 +905,8 @@
          * Check if Editr is fully loaded
          * @return {Boolean}
          */
-        this.isReady = function () {
-            return data.filesLoaded.length === data.filesTotal;
+        this.isReady = function() {
+            return data.filesLoaded === data.filesTotal;
         };
 
         // Return all files
@@ -798,7 +916,7 @@
          * @param  {String} type File type
          * @return {Object}      File data
          */
-        this.getFiles = function (type) {
+        this.getFiles = function(type) {
             return type ? data.files[type] : data.files;
         };
 
@@ -808,7 +926,7 @@
          * @param  {Integer} id   File ID
          * @return {Object}      File data
          */
-        this.getFile = function (type, id) {
+        this.getFile = function(type, id) {
             return data.files[type][id];
         };
 
@@ -816,7 +934,7 @@
          * Set Editr textareas read state
          * @param  {bool} value State
          */
-        this.setReadOnly = __.debounce(function (value) {
+        this.setReadOnly = __.debounce(function(value) {
             for (var extension in data.files) {
                 for (var i = 0; i < data.files[extension].length; i++) {
                     data.files[extension][i].editor.setReadOnly(value);
@@ -839,7 +957,7 @@
     }
 
     if (typeof define === "function" && define.amd) {
-        define("editr", [], function () {
+        define("editr", [], function() {
             return Editr;
         });
     }

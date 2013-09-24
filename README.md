@@ -107,16 +107,27 @@ path | `items` | Path to folder with projects.
 theme | `monokai` | ACE Editor theme.
 hide | `null` | This attribute allows you to hide elements from Editr toolbar. Values: `all result html css js`.
 readonly | `false` | Make Editr textarea read-only.
-files-html | `null` | HTML Files. Base64 supported.
-files-css | `null` | CSS Files. LESS is supported. Base64 supported.
-files-js | `null` | JavaScript Files. CoffeeScript is supported. Base64 supported.
+files-html | `null` | HTML Files. Base64 and Gists are supported.
+files-css | `null` | CSS Files. LESS is supported. Base64 and Gists are supported.
+files-js | `null` | JavaScript Files. CoffeeScript is supported. Base64 and Gists are supported.
 
 **Notes:**
 
  * `data-` attributes overwrites options passed via JS.
  * Files passed in files-[html,css,js] should be separated by `;`.
- * Add `!` before file name to load file in editor but hide it from navigation bar.
- * If you want to add Base64 encoded preprocessor code, add preprocessor name before it: coffee:BASE64_STRING or less:BASE64_STRING.
+
+#### Valid ways to add files
+
+Desciption | Code | Note
+Single file | `index.html`
+Multiple files | `index.html; other-page.html` | Separated by `;`
+Hide file from nav| `!index.html` | Add `!` before name
+Read base64 string | `Ym9keSB7IHdpZHRoOiA1MCU7IH0=`
+Read multiple base64 string | `Ym9keSB7IHdpZHRoOiA1MCU7IH0=; ZGl2IHsgaGVpZ2h0OiA1MCU7IH0=``
+Hide base64 content from nav | `!Ym9keSB7IHdpZHRoOiA1MCU7IH0=;`
+Use preprocessor on base64 string | `less:Ym9keSB7IHdpZHRoOiA1MCU7IH0=;` | You can hide it from nav by adding `!` before preprocessor name
+Github Gist single file | `$4631473,jquery.js;script.js` | Template: `$GIST_ID,FILE-1,...,FILE-N`. Preceded by `$`. Files separated by `,`. Add `!` before file name to hide it, not before GIST_ID.
+
 
 ### Via JavaScript
 
@@ -154,10 +165,7 @@ setReadOnly | `value` - boolean | Set Editr textareas read state
 
 **GPL v3 Licensing**
 
+http://choosealicense.com/licenses/gpl-v3
+
 Copyright (c) 2013 Kasper Mikiewicz
 
-Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
