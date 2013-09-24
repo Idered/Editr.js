@@ -124,7 +124,7 @@ Single file | `index.html`
 Multiple files | `index.html; other-page.html` | Separated by `;`
 Hide file from nav| `!index.html` | Add `!` before name
 Read base64 string | `Ym9keSB7IHdpZHRoOiA1MCU7IH0=` | Separate multiple strings like normal files
-Hide base64 content from nav | `!Ym9keSB7IHdpZHRoOiA1MCU7IH0=;`
+Hide base64 content from nav | `!Ym9keSB7IHdpZHRoOiA1MCU7IH0=`
 Use preprocessor on base64 string | `less:Ym9keSB7IHdpZHRoOiA1MCU7IH0=;` | You can hide it from nav by adding `!` before preprocessor name
 Github Gist single file | `$4631473,jquery.js;script.js` | Template: `$GIST_ID,FILE-1,...,FILE-N`. Preceded by `$`. Files separated by `,`. Add `!` before file name to hide it, not before GIST_ID.
 
