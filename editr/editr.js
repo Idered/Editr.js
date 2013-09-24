@@ -13,13 +13,13 @@
 
     'use strict';
 
-    var EditrInstances = [];
+    var EditrInstances = EditrInstances || [];
 
     var Editr = function (opts) {
 
-        var self = this;
-
         EditrInstances.push(this);
+
+        var self = this;
 
         // Editor
         var editor = $(opts.el);
@@ -428,14 +428,10 @@
             },
 
             renderPreview: function (file) {
+                var fileCSS, fileJS;
                 data.activeItem = file.id;
 
                 if (!file) return;
-
-                // Add HTML
-                el.preview.body.html(
-                    file.editor.getValue()
-                );
 
                 // Remove old stylsheet
                 el.preview.head.find('style, script').remove();
@@ -445,10 +441,10 @@
 
                 // Add css
                 for (var i = 0; i < data.files.css.length; i++) {
-                    file = data.files.css[i];
+                    fileCSS = data.files.css[i];
 
                     try {
-                        var parsed = opts.parsers[file.extension].fn(file.editor.getValue());
+                        var parsed = opts.parsers[fileCSS.extension].fn(fileCSS.editor.getValue());
 
                         if (typeof parsed === 'object') {
                             throw parsed;
@@ -462,16 +458,21 @@
                     }
                 }
 
+                // Add HTML
+                el.preview.body.html(
+                    file.editor.getValue()
+                );
+
                 // Remove js error flag
                 el.nav.find('[data-type="js"]').first().removeClass('editr__nav-item--invalid').removeAttr('title');
 
                 // Add js
                 for (var j = 0; j < data.files.js.length; j++) {
-                    file = data.files.js[j];
+                    fileJS = data.files.js[j];
 
                     try {
                         el.preview.result[0].contentWindow.eval(
-                            opts.parsers[file.extension].fn(file.editor.getValue())
+                            opts.parsers[fileJS.extension].fn(fileJS.editor.getValue())
                         );
                     } catch (e) {
                         el.nav.find('[data-type="js"]').first().addClass('editr__nav-item--invalid').attr('title', 'Error in Evaled Script: ' + e.message);
@@ -753,7 +754,6 @@
             }
         };
 
-        // Kick it off
         var init = function () {
             // Get project name
             data.item = editor.data('item');
@@ -774,6 +774,7 @@
             build.ui();
         };
 
+        // Kick it off
         init();
 
         /**
