@@ -6,7 +6,7 @@
  * http://opensource.org/licenses/GPL-3.0
  *
  * Github:  http://github.com/idered/Editr.js/
- * Version: 2.0
+ * Version: 2.1.0
  */
 
 (function (w) {
@@ -436,12 +436,12 @@
                 // Remove old stylsheet
                 el.preview.head.find('style, script').remove();
 
-                // Remove css error flag
-                el.nav.find('[data-type="css"]').first().removeClass('editr__nav-item--invalid').removeAttr('title');
-
                 // Add css
                 for (var i = 0; i < data.files.css.length; i++) {
                     fileCSS = data.files.css[i];
+
+                    // Remove css error flag
+                    $(fileCSS.editor.container).removeClass('editr__editor--invalid').removeAttr('data-error');
 
                     try {
                         var parsed = opts.parsers[fileCSS.extension].fn(fileCSS.editor.getValue());
@@ -454,7 +454,7 @@
                             text: parsed
                         }));
                     } catch (e) {
-                        el.nav.find('[data-type="css"]').first().addClass('editr__nav-item--invalid').attr('title', e.message);
+                        $(fileCSS.editor.container).addClass('editr__editor--invalid').attr('data-error', e.message);
                     }
                 }
 
@@ -464,18 +464,19 @@
                 );
 
                 // Remove js error flag
-                el.nav.find('[data-type="js"]').first().removeClass('editr__nav-item--invalid').removeAttr('title');
 
                 // Add js
                 for (var j = 0; j < data.files.js.length; j++) {
                     fileJS = data.files.js[j];
+
+                    $(fileJS.editor.container).removeClass('editr__editor--invalid').removeAttr('data-error');
 
                     try {
                         el.preview.result[0].contentWindow.eval(
                             opts.parsers[fileJS.extension].fn(fileJS.editor.getValue())
                         );
                     } catch (e) {
-                        el.nav.find('[data-type="js"]').first().addClass('editr__nav-item--invalid').attr('title', 'Error in Evaled Script: ' + e.message);
+                        $(fileJS.editor.container).addClass('editr__editor--invalid').attr('data-error', 'Error: ' + e.message);
                     }
                 }
             }
