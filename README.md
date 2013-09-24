@@ -119,6 +119,7 @@ files-js | `null` | JavaScript Files. CoffeeScript is supported. Base64 and Gist
 #### Valid ways to add files
 
 Desciption | Code | Note
+--- | --- | ---
 Single file | `index.html`
 Multiple files | `index.html; other-page.html` | Separated by `;`
 Hide file from nav| `!index.html` | Add `!` before name
