@@ -620,7 +620,7 @@
              * @return {ACE }
              */
             editor: function (type, id) {
-                return data.files[type][id].editor.container;
+                return data.files[type][id].editor;
             },
 
             /**
@@ -734,15 +734,13 @@
                             el.preview.frame.addClass('active').siblings().removeClass('active');
                         }
                     } else { // Show editor
-                        aceEditor = $(get.editor(item.data('type'), item.data('id')));
+                        aceEditor = get.editor(item.data('type'), item.data('id'));
 
-                        if (__.isPaneled()) {
-                            aceEditor.addClass('active').siblings('.editr__editor--' + item.data('type')).removeClass('active');
-                        } else {
-                            aceEditor.addClass('active').siblings().removeClass('active');
-                        }
+                        $(aceEditor.container).addClass('active').siblings(__.isPaneled() ? '.editr__editor--' + item.data('type') : '').removeClass('active');
 
-                        ace.edit(aceEditor.attr('id')).resize();
+                        aceEditor.focus();
+
+                        aceEditor.resize();
                     }
                 }).first().trigger('click');
 
