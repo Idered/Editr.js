@@ -6,7 +6,7 @@
  * http://opensource.org/licenses/GPL-3.0
  *
  * Github:  http://github.com/idered/Editr.js/
- * Version: 2.2.0
+ * Version: 2.2.1
  */
 
 (function(w) {
@@ -46,7 +46,12 @@
                         str.find('script, link, style').remove();
 
                         if (!isEncoded) {
-                            str = str.find('.body').html();
+
+                            if (str.find('.body').length) {
+                                str = str.find('.body').html();
+                            } else {
+                                str = str.html()
+                            }
 
                             str = str
                             // replace multiple empty lines with one empty line
@@ -104,12 +109,11 @@
             view: 'single',
             readonly: false,
             path: 'items',
-            loadingText: '',
             theme: 'monokai',
             callback: function() {}
         }, opts);
 
-        var htmlOpts = ['path', 'readonly', 'theme', 'view', 'loadingText'];
+        var htmlOpts = ['path', 'readonly', 'theme', 'view'];
 
         // Extend js options with options from html data- attributes
         for (var i = 0; i < htmlOpts.length; i++) {
@@ -124,13 +128,13 @@
         // Project data - files, name, etc.
         var data = {
             gists: {},
+            filesLoaded: 0,
             files: {
                 html: [],
                 css: [],
                 js: []
             },
-            activeItem: -1,
-            filesLoaded: 0
+            activeItem: -1
         };
 
         var build = {
@@ -187,7 +191,7 @@
                 // Create nav item with label and add subnav
                 nav = __.obj('li', {
                     'data-type': pseudoType || type,
-                    class: 'editr__nav-item' + (get.visibleFilesCount(type) > 1 ? ' is-dropped' : '')
+                    class: 'editr__nav-item' + (data.files[type].length > 1 ? ' is-dropped' : '')
                 }).append(__.obj('span', {
                     class: 'editr__nav-label',
                     text: label
@@ -220,27 +224,27 @@
              * Setup preview iframe, load preview of first html file
              */
             preview: function() {
-                var index = data.files.html[0],
-                    iframeSrc = [opts.path, data.item, index.filename].join('/');
-
-                // We don't have a real file on server so we have to point it to default index.html
-                if (index.isEncoded || index.isDefault || index.isGist) {
-                    iframeSrc = opts.path + '/index.html';
-                }
+                var index = data.files.html[0];
 
                 return __.obj('iframe', {
                     class: 'editr__result',
                     name: 'editr_' + get.randomID(),
-                    src: iframeSrc
+                    src: opts.path + '/index.html'
                 }).load(function() {
                     el.preview.result = $(this);
                     el.preview.body = el.preview.result.contents().find('body');
                     el.preview.head = el.preview.result.contents().find('head');
 
                     // Clean iframe
-                    el.preview.result.contents()
-                        .find('link, style').remove().end()
-                        .find('body').empty();
+                    el.preview.result.contents().find('link, style, script').remove();
+
+                    el.preview.body.empty();
+
+                    // Add style holder
+                    el.preview.head.append(__.obj('style', {
+                        class: 'editr-stylesheet',
+                        rel: 'stylsheet'
+                    }));
 
                     // Build editors
                     el.editors = build.editors();
@@ -250,31 +254,23 @@
             /**
              * Compose editors
              */
-
             editors: function() {
                 var editors = {},
                     file;
 
                 // Loop through categories
-                for (var extension in data.files) {
-                    var files = data.files[extension];
-                    for (var i = 0; i < files.length; i++) {
-                        file = files[i];
-
-                        if (!editors[extension]) {
-                            editors[extension] = [];
-                        }
+                $.each(data.files, function(extension, files) {
+                    $.each(files, function(id, file) {
+                        editors[extension] = editors[extension] || [];
 
                         // Build editor and push it to file data
                         editors[extension].push(
-                            data.files[extension][i].editor = build.editor(file, i)
+                            data.files[extension][id].editor = build.editor(file, id)
                         );
 
-                        if (!file.isDefault) {
-                            get.fileContent(file);
-                        }
-                    }
-                }
+                        get.fileContent(file);
+                    });
+                });
 
                 return editors;
             },
@@ -337,7 +333,7 @@
              * @param  {Function} fn
              * @return {Function}
              */
-            debounce: function(fn) {
+            whenReady: function(fn) {
                 var timer = null;
 
                 return function() {
@@ -353,12 +349,38 @@
             },
 
             /**
+             * Debounce fn from underscore source
+             * @return {Function}
+             */
+            debounce: function(wait, immediate) {
+                var timeout,
+                    func = this;
+                return function() {
+                    var context = this,
+                        args = arguments;
+                    var later = function() {
+                        timeout = null;
+                        if (!immediate) {
+                            func.apply(context, args);
+                        }
+                    };
+                    var callNow = immediate && !timeout;
+                    clearTimeout(timeout);
+                    timeout = setTimeout(later, wait);
+                    if (callNow) {
+                        func.apply(context, args);
+                    }
+                };
+            },
+
+            /**
              * Get length of object
              * @param  {object} obj
              * @return {Integer}
              */
             size: function(obj) {
-                var size = 0, key;
+                var size = 0,
+                    key;
                 for (key in obj) {
                     if (obj.hasOwnProperty(key)) size++;
                 }
@@ -478,8 +500,10 @@
                     var gistFiles = file.filename.split(','),
                         gistID = gistFiles[0];
 
-                    // Create empty object for gist data loaded later
-                    data.gists[gistID] = {};
+                    if (!data.gists[gistID]) {
+                        // Create empty object for gist data loaded later
+                        data.gists[gistID] = {};
+                    }
 
                     // Remove gist id so only filenames left
                     gistFiles.shift();
@@ -534,13 +558,11 @@
              * @param  {string} code
              */
             fileContentCallback: function(file, content) {
-                if (file.isEncoded) {
-                    content = file.content;
-                }
-
                 if (file.isGistFile) {
                     file.content = data.gists[file.gistID].files[file.filename].content;
+                }
 
+                if (file.isEncoded || file.isGistFile || file.isDefault) {
                     content = file.content;
                 }
 
@@ -564,8 +586,8 @@
 
                 if (!file) return;
 
-                // Remove old stylsheet
-                el.preview.head.find('style, script').remove();
+                // Remove old css
+                var styleHolder = el.preview.head.find('.editr-stylesheet').empty();
 
                 // Add css
                 for (var i = 0; i < data.files.css.length; i++) {
@@ -575,16 +597,13 @@
                     $(fileCSS.editor.container).removeClass('editr__editor--invalid').removeAttr('data-error');
 
                     try {
-                        var parsed = opts.parsers[fileCSS.extension].fn(fileCSS.editor.getValue());
+                        var css = opts.parsers[fileCSS.extension].fn(fileCSS.editor.getValue());
 
-                        if (typeof parsed === 'object') {
-                            throw parsed;
+                        if (typeof css === 'object') {
+                            throw css;
                         }
 
-                        el.preview.head.append(__.obj('style', {
-                            rel: 'stylsheet',
-                            text: parsed
-                        }));
+                        styleHolder.append(css);
                     } catch (e) {
                         $(fileCSS.editor.container).addClass('editr__editor--invalid').attr('data-error', e.message);
                     }
@@ -594,7 +613,6 @@
                 el.preview.body.html(
                     file.editor.getValue()
                 );
-
 
                 // Add js
                 for (var j = 0; j < data.files.js.length; j++) {
@@ -611,9 +629,6 @@
                         $(fileJS.editor.container).addClass('editr__editor--invalid').attr('data-error', 'Error: ' + e.message);
                     }
                 }
-
-                // Force html rerender
-                el.preview.body.hide().show();
             }
         };
 
@@ -632,13 +647,12 @@
                 // Remove last ';'
                 files.replace(/;$/, '');
 
-
                 if (files) {
                     // Split files list to array
-                    files = files.replace(/\s/g, '').split(';');
+                    files = files.split(';');
 
                     for (var i = 0; i < files.length; i++) {
-                        __.addFile(type, files[i]);
+                        __.addFile(type, $.trim(files[i]));
                     }
                 }
 
@@ -690,7 +704,7 @@
              */
             fileContent: function(file) {
                 // If File is encoded or it's file from  gist then it's already loaded
-                if (file.isEncoded || file.isGistFile) {
+                if (file.isEncoded || file.isGistFile || file.isDefault) {
                     __.fileContentCallback(file);
                     return;
                 }
@@ -751,23 +765,6 @@
                 }
 
                 return files;
-            },
-
-            /**
-             * Count files with isHidden property set to false
-             * @param  {string} type
-             * @return {int}
-             */
-            visibleFilesCount: function(type) {
-                var count = 0;
-
-                for (var i = 0; i < data.files[type].length; i++) {
-                    if (!data.files[type][i].isDefault) {
-                        ++count;
-                    }
-                }
-
-                return count;
             },
 
             /**
@@ -882,9 +879,9 @@
 
             // Count files
             data.filesTotal =
-                get.visibleFilesCount('html') +
-                get.visibleFilesCount('css') +
-                get.visibleFilesCount('js');
+                data.files['html'].length +
+                data.files['css'].length +
+                data.files['js'].length;
 
             get.gistsData(function() {
                 build.ui();
@@ -909,7 +906,13 @@
             return data.filesLoaded === data.filesTotal;
         };
 
-        // Return all files
+        /**
+         * Return gists array
+         * @return {Object}
+         */
+        this.getGists = function() {
+            return data.gists;
+        };
 
         /**
          * Return all files for given type or overall if not passed
@@ -934,7 +937,7 @@
          * Set Editr textareas read state
          * @param  {bool} value State
          */
-        this.setReadOnly = __.debounce(function(value) {
+        this.setReadOnly = __.whenReady(function(value) {
             for (var extension in data.files) {
                 for (var i = 0; i < data.files[extension].length; i++) {
                     data.files[extension][i].editor.setReadOnly(value);
