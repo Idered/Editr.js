@@ -498,7 +498,7 @@
                     file.filename = file.filename.replace(/^\$/, '');
 
                     var gistFiles = file.filename.split(','),
-                        gistID = gistFiles[0];
+                        gistID = $.trim(gistFiles[0]);
 
                     if (!data.gists[gistID]) {
                         // Create empty object for gist data loaded later
@@ -509,7 +509,7 @@
                     gistFiles.shift();
 
                     for (var i = 0; i < gistFiles.length; i++) {
-                        __.addFile(type, gistFiles[i], false, true, gistID);
+                        __.addFile(type, $.trim(gistFiles[i]), false, true, gistID);
                     }
 
                     return;
