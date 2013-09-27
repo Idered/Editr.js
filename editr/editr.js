@@ -325,7 +325,7 @@
              * @return {Boolean}
              */
             isPaneled: function() {
-                return ['horizontal', 'vertical'].indexOf(opts.view) != -1;
+                return ['horizontal', 'vertical', 'cartesian'].indexOf(opts.view) != -1;
             },
 
             /**
