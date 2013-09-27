@@ -102,7 +102,7 @@ This will load project named 'PROJECT-NAME' from 'items/' folder(Editr default v
 Name | Default | Description
 --- |:---:| ---
 item | `null` | Name of project folder inside projects folder('path' option).
-view | `single` | Editr layout view. Other options: `horizontal`, `vertical`.
+view | `single` | Editr layout view. Other options: `horizontal`, `vertical`, `cartesian`.
 path | `items` | Path to folder with projects.
 theme | `monokai` | ACE Editor theme.
 hide | `null` | This attribute allows you to hide elements from Editr toolbar. Values: `all result html css js`.
@@ -133,7 +133,7 @@ Github Gist single file | `$4631473,jquery.js;script.js` | Template: `$GIST_ID,F
 
 Name | Default | Description
 --- |:---:| ---
-view | `single` | Editr layout view. Other options: `horizontal`, `vertical`.
+view | `single` | Editr layout view. Other options: `horizontal`, `vertical`, `cartesian`.
 path | `items` | Path to folder with projects.
 theme | `monokai` | ACE Editor theme.
 readonly | `false` | Make Editr textarea read-only.
