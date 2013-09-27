@@ -18,7 +18,6 @@
 .editr[data-hide*="css"] .editr__nav-item[data-type="css"],
 .editr[data-hide*="js"] .editr__nav-item[data-type="js"] { display: none; }
 
-
 .editr__bar {
     background: #fff;
     border-radius: 3px 3px 0 0;
@@ -195,21 +194,21 @@
 
 /** Scrollbar */
 /*------------------------------------*/
-::-webkit-scrollbar {
+.editr ::-webkit-scrollbar {
     -webkit-appearance: none;
     width: 12px;
     height: 12px;
     background-color: #1a1c1e;
 }
 
-::-webkit-scrollbar-thumb {
+.editr ::-webkit-scrollbar-thumb {
     border-radius: 1em;
     border: 4px solid rgba(255,255,255,0);
     background-clip: content-box;
     background-color: #31353a;
 }
 
-::-webkit-scrollbar-corner {
+.editr ::-webkit-scrollbar-corner {
     background-color: inherit;
 }
 
