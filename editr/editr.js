@@ -1,12 +1,12 @@
-/*
+/*!
  * Editr.js
  *
  * Copyright 2013, Kasper Mikewicz - http://idered.pl/
- * Released under the GPL v3 License
- * http://opensource.org/licenses/GPL-3.0
+ * Released under the MIT License
+ * http://choosealicense.com/licenses/mit/
  *
  * Github:  http://github.com/idered/Editr.js/
- * Version: 2.2.1
+ * Version: 2.3.0
  */
 
 (function(w) {
@@ -106,10 +106,21 @@
                     }
                 }
             },
+
+            // Default layout view
             view: 'single',
-            readonly: false,
+
+            // Default path to projects
             path: 'items',
+
+            // ACE theme
             theme: 'monokai',
+
+            // ACE read mode
+            readonly: false,
+
+            wrap: false,
+
             callback: function() {}
         }, opts);
 
@@ -287,21 +298,22 @@
                         class: 'editr__editor editr__editor--' + (file.type || file.extension)
                     }).appendTo(el.content);
 
+                require("ace/ext/emmet");
+
                 aceEditor = ace.edit(textarea.attr('id'));
                 aceEditor.setTheme("ace/theme/" + opts.theme);
                 aceEditor.getSession().setMode('ace/mode/' + (file.extension === 'js' ? 'javascript' : file.extension));
+                aceEditor.getSession().setUseWrapMode(opts.wrap);
+                aceEditor.setReadOnly(opts.readonly);
+                aceEditor.setWrapBehavioursEnabled(true);
+                aceEditor.setOption("enableEmmet", true);
                 aceEditor.getSession().setUseWorker(false);
 
-                require("ace/ext/emmet");
-                aceEditor.setOption("enableEmmet", true);
-
-                aceEditor.setReadOnly(opts.readonly);
-
-                aceEditor.on('change', function() {
+                aceEditor.on('change', _.debounce(function() {
                     if (data.activeItem !== -1) {
                         __.renderPreview(data.files.html[data.activeItem]);
                     }
-                });
+                }, 250, false));
 
                 return aceEditor;
             },
@@ -329,6 +341,34 @@
             },
 
             /**
+             * Debounce fn from underscore source
+             * @return {Function}
+             */
+            debounce: function(func, wait, immediate) {
+
+                var timeout;
+
+                return function debounced() {
+                    var context = this,
+                        args = arguments;
+
+                    function delayed() {
+                        if (!immediate)
+                            func.apply(context, args);
+                        timeout = null;
+                    };
+
+                    if (timeout)
+                        clearTimeout(timeout);
+                    else if (immediate)
+                        func.apply(context, args);
+
+                    timeout = setTimeout(delayed, wait || 100);
+                };
+
+            },
+
+            /**
              * Wait until all files are loaded and fire passed fn
              * @param  {Function} fn
              * @return {Function}
@@ -345,31 +385,6 @@
                             fn.call(context, args);
                         }
                     }, 50);
-                };
-            },
-
-            /**
-             * Debounce fn from underscore source
-             * @return {Function}
-             */
-            debounce: function(wait, immediate) {
-                var timeout,
-                    func = this;
-                return function() {
-                    var context = this,
-                        args = arguments;
-                    var later = function() {
-                        timeout = null;
-                        if (!immediate) {
-                            func.apply(context, args);
-                        }
-                    };
-                    var callNow = immediate && !timeout;
-                    clearTimeout(timeout);
-                    timeout = setTimeout(later, wait);
-                    if (callNow) {
-                        func.apply(context, args);
-                    }
                 };
             },
 
@@ -576,7 +591,7 @@
                     content = opts.parsers[file.extension].fn(content || file.content || '', file.isEncoded);
                 }
 
-                file.editor.setValue(content);
+                file.editor.session.setValue(content);
                 file.editor.clearSelection();
             },
 
@@ -862,7 +877,7 @@
                                 $(data.files[categories[i]][j].editor.container).addClass('active');
                                 break;
                             }
-                        };
+                        }
                     }
                 }
             }
@@ -890,6 +905,7 @@
 
         // Kick it off
         init();
+
 
         /**
          * API

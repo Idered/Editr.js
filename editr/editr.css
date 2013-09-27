@@ -193,6 +193,34 @@
     display: block;
 }
 
+/** Scrollbar */
+/*------------------------------------*/
+::-webkit-scrollbar {
+    -webkit-appearance: none;
+    width: 12px;
+    height: 12px;
+    background-color: #1a1c1e;
+}
+
+::-webkit-scrollbar-thumb {
+    border-radius: 1em;
+    border: 4px solid rgba(255,255,255,0);
+    background-clip: content-box;
+    background-color: #31353a;
+}
+
+::-webkit-scrollbar-corner {
+    background-color: inherit;
+}
+
+.editr--light ::-webkit-scrollbar {
+    background-color: #eee;
+}
+
+.editr--light ::-webkit-scrollbar-thumb {
+    background-color: #9BA0A3;
+}
+
 /** View - Horizontal */
 /*------------------------------------*/
 .editr-view--horizontal .editr__editor.active {
