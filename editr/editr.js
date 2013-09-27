@@ -124,7 +124,7 @@
             callback: function() {}
         }, opts);
 
-        var htmlOpts = ['path', 'readonly', 'theme', 'view'];
+        var htmlOpts = ['path', 'readonly', 'theme', 'view', 'wrap'];
 
         // Extend js options with options from html data- attributes
         for (var i = 0; i < htmlOpts.length; i++) {
