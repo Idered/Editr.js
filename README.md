@@ -136,11 +136,22 @@ Name | Default | Description
 --- |:---:| ---
 view | `single` | Editr layout view. Other options: `horizontal`, `vertical`.
 path | `items` | Path to folder with projects.
+gistProxyURL | `/editr/libs/proxy.gist.php` | Path to gist proxy file.
 theme | `monokai` | ACE Editor theme. If you want to use light theme then also add class `editr--light`.
 wrap | `false` | Set to true if you want to wrap lines.
 readonly | `false` | Make Editr textarea read-only.
 callback | `function (editor) {}` | Callback triggered after all files are loaded and Editr is ready. Editr object is passed as an argument, use wisely.
 parsers | Check source | You can add custom parsers for preprocessors. Check source for more info.
+
+## Load files from Gists
+
+To load files from Gists, you need to configure gist proxy file first, it's really easy.
+
+Go to [Authorized Applications page](https://github.com/settings/applications) and create new Personal Access Token, name it Editr or whatever you want.
+
+Open `editr/libs/proxy.gist.php` file, update `$username` and `$api_token` variables.
+
+Now make sure that `gistProxyURL` option is set properly.
 
 ## API
 

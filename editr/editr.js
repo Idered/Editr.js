@@ -107,6 +107,9 @@
                 }
             },
 
+            // Link to Gist proxy file
+            gistProxyURL: '/editr/libs/proxy.gist.php',
+
             // Default layout view
             view: 'single',
 
@@ -698,8 +701,13 @@
 
                 for (var id in data.gists) {
                     $.ajax({
-                        url: 'https://api.github.com/gists/' + id,
+                        url: opts.gistProxyURL,
+                        type: "POST",
+                        data: {
+                            id: id
+                        },
                         success: function(response) {
+                            console.log(response);
                             data.gists[response.id] = response;
 
                             ++data.gistsLoaded;
