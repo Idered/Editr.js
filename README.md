@@ -102,7 +102,7 @@ This will load project named 'PROJECT-NAME' from 'items/' folder(Editr default v
 Name | Default | Description
 --- |:---:| ---
 item | `null` | Name of project folder inside projects folder('path' option).
-view | `single` | Editr layout view. Other options: `horizontal`, `vertical`.
+view | `single` | Editr layout view. Other options: `horizontal`, `vertical`, `cartesian`.
 path | `items` | Path to folder with projects.
 theme | `monokai` | ACE Editor theme. If you want to use light theme then also add class `editr--light`.
 hide | `null` | This attribute allows you to hide elements from Editr toolbar. Values: `all result html css js`.
@@ -134,7 +134,7 @@ Github Gist | `$4631473, jquery.js, script.js` | Template: `$GIST_ID,FILE-1,...,
 
 Name | Default | Description
 --- |:---:| ---
-view | `single` | Editr layout view. Other options: `horizontal`, `vertical`.
+view | `single` | Editr layout view. Other options: `horizontal`, `vertical`, `cartesian`.
 path | `items` | Path to folder with projects.
 gistProxyURL | `/editr/libs/proxy.gist.php` | Path to gist proxy file.
 theme | `monokai` | ACE Editor theme. If you want to use light theme then also add class `editr--light`.

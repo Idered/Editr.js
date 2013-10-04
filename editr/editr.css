@@ -263,6 +263,32 @@
     left: 40%;
 }
 
+/** View - Cartesian */
+/*------------------------------------*/
+
+.editr-view--cartesian .editr__editor.active {
+    border: 1px solid #BBC0CA;
+    width: 50%;
+    height: 50%;
+    left:0%;
+}
+
+.editr-view--cartesian .editr__editor.active ~ .editr__editor.active {
+    left:50%;
+}
+
+.editr-view--cartesian .editr__editor.active ~ .editr__editor.active ~ .editr__editor.active {
+    left:0%;
+	top: 50%;
+}
+
+.editr-view--cartesian .editr__result {
+	left: 50%;
+	top:50%;
+	width: 50%;
+	height: 50%;
+}
+
 /** Loader */
 /*------------------------------------*/
 .editr:after,
