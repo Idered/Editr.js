@@ -6,6 +6,10 @@ Editr is a HTML, CSS and JavaScript playground that you can host on your server.
 
 You can check demo and read more about features [here](http://lab.idered.pl/editr).
 
+## EditrWP - Wordpress Plugin
+
+You can also buy Editr.js as Wordpress plugin [here](http://codecanyon.net/item/editrwp-wordpress-plugin/6309158)
+
 ## Files structure
 
 ```
