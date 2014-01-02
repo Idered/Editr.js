@@ -1,6 +1,6 @@
 # Editr
 
-[![Gittip](http://img.shields.io/gittip/jsfiddle.png)](https://www.gittip.com/Idered/)
+[![Gittip](http://img.shields.io/gittip/idered.png)](https://www.gittip.com/Idered/)
 
 ## About
 
