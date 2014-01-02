@@ -1,5 +1,7 @@
 # Editr
 
+[![Gittip](http://img.shields.io/gittip/jsfiddle.png)](https://www.gittip.com/Idered/)
+
 ## About
 
 Editr is a HTML, CSS and JavaScript playground that you can host on your server. it is based on ACE Editor. It’s super easy to setup and supports multiple instances on one page. Configurations are available via JS object or HTML attributes.
