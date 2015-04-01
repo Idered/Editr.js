@@ -42,7 +42,6 @@ function curlQuery($url, $username, array $headers = array())
         CURLOPT_TIMEOUT => 7,
         CURLOPT_SSL_VERIFYPEER => false,
         CURLOPT_SSL_VERIFYHOST => 2,
-        CURLOPT_SSLVERSION => 3,
         CURLOPT_HTTPGET => true
     ));
 
