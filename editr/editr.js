@@ -386,6 +386,7 @@
                     timer = setInterval(function() {
                         if (data.filesLoaded === data.filesTotal) {
                             fn.call(context, args);
+                            clearInterval(timer);
                         }
                     }, 50);
                 };
