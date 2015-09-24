@@ -260,6 +260,33 @@
                         rel: 'stylsheet'
                     }));
 
+                    if (opts.libs && $.isArray(opts.libs)) {
+                        var rExt = /\.(js|css)\??.*/,
+                            doc = el.preview.result[0].contentWindow.document;
+                        var queue = [];
+                        $.each(opts.libs, function(i, url){
+                            if (!url || typeof url !== 'string') return;
+                            var elem, ext = rExt.exec(url) && RegExp.$1;
+                            if (!ext) return;
+                            if (ext === 'js') {
+                                elem = doc.createElement('script');
+                                elem.src = url;
+                                $(elem).on('load', function(){
+                                    if (queue.length) doc.head.appendChild(queue.shift());
+                                });
+                                queue.push(elem);
+                            } else if (ext === 'css') {
+                                elem = doc.createElement('link');
+                                elem.rel = "stylesheet";
+                                elem.href = url;
+                                doc.head.appendChild(elem);
+                            }
+                        });
+                        if (queue.length) {
+                            doc.head.appendChild(queue.shift());
+                        }
+                    }
+
                     // Build editors
                     el.editors = build.editors();
                 });
