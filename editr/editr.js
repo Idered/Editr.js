@@ -664,7 +664,7 @@
                     hiddenFilesTotal = 0;
 
                 // Remove last ';'
-                files.replace(/;$/, '');
+                files.replace(/;\s+?$/, '');
 
                 if (files) {
                     // Split files list to array
