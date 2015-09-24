@@ -31,7 +31,7 @@
         };
 
         // Default settings
-        opts = $.extend({
+        opts = $.extend(true, {
             parsers: {
                 'html': {
                     type: 'html',
