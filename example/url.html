@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Editr - HTML, CSS, JavaScript playground</title>
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/normalize/2.1.0/normalize.css">
+
+    <style>
+        html {
+            font: 400 1em/1.5 "Open Sans", sans-serif;
+            background-color: #fff;
+            margin: 0 auto;
+            padding: 1em;
+            max-width: 960px;
+        }
+    </style>
+    <link rel="stylesheet" href="../dist/editr.min.css">
+</head>
+<body>
+    <div data-editr="url:https://code.jquery.com/jquery-2.2.2.min.js" class="editr"></div>
+
+    <script src="/editr/dist/editr.min.js"></script>
+    <script>
+        new Editr( {
+            element: document.querySelector( '[data-editr]' )
+        } ).on( {
+            'editr:add': function ( event ) {
+                console.log( event.detail );
+            },
+            'editr:loaded': function ( event ) {
+                console.log( event.detail );
+            }
+        } );
+    </script>
+</body>
+</html>

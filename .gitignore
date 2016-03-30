@@ -1,1 +1,5 @@
-TODO
+/vendor
+/bower.json
+/.bowerrc
+.idea
+node_modules
