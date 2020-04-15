@@ -1,12 +1,10 @@
 # Editr
 
-[![Gittip](http://img.shields.io/gittip/idered.png)](https://www.gittip.com/Idered/)
-
 ## About
 
 Editr is a HTML, CSS and JavaScript playground that you can host on your server. it is based on ACE Editor. It’s super easy to setup and supports multiple instances on one page. Configurations are available via JS object or HTML attributes.
 
-You can check demo and read more about features [here](http://lab.idered.pl/editr).
+You can check demo and read more about features [here](http://lab.kasper.io/editr).
 
 ## EditrWP - Wordpress Plugin
 
