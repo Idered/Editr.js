@@ -55,7 +55,7 @@ You also have to add parsers if you want to support preprocessors:
 * Coffescript `/editr/libs/parser.coffeescript.js`
 * LESS `/editr/libs/parser.less.js`
 
-## Installation
+## Installation Guide
 
 Copy `editr` folder to root of your website.
 
